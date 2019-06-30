@@ -16,30 +16,55 @@ class Product (models.Model):
 
 
 class ShopPage (models.Model):
-     product = models.OneToOneField(
-        Product,
-        on_delete=models.CASCADE,
-        primary_key=True,
-    )
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
     instructions = models.TextField(max_length=3000)
     ingredients = models.TextField(max_length=3000)
 
+    REQUIRED_FIELDS= ['product']
 
 
-class Gallery (models.Model):
+
+class Gallerie (models.Model):
     pass
 
 
 class Picture (models.Model):
     title = models.CharField(max_length=255)
     subtitle=models.CharField(max_length=255)
-    gallery = models.ForeignKey(Gallery, on_delete=models.CASCADE)
+    gallerie = models.ForeignKey(Gallerie, on_delete=models.CASCADE)
 
 
-class AboutUs (models.Model):
+class AboutU (models.Model):
     about = models.TextField(max_length=2000)
     get_to_know_us = models.TextField(max_length=3000)
 
 
 class Cart (models.Model):
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    number_of_products = models.IntegerField()
+
+
+class ContactU (models.Model):
+    client_name = models.CharField(max_length=255)
+    client_email = models.CharField(max_length=255)
+    subject = models.CharField(max_length=255)
+    how_can_i_help = models.TextField(max_length=3000)
+    working_hours = models.TextField(max_length=3000)
+
+
+
+
+class Store (models.Model):
+    location = models.CharField(max_length=255)
+
+
+
+class Brand (models.Model):
+    brand_name = models.CharField(max_length=255)
+    is_featured = models.BooleanField()
+
+
+class Categorie (models.Model):
+    category_name = models.CharField(max_length=255)
+    brands = models.ManyToManyField(Brand)
