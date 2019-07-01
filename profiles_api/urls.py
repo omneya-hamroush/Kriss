@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from profiles_api import views
 
 router= DefaultRouter()
-router.register('product', views.ProductViewSet, base_name='product')
+#router.register('product', views.ProductViewSet, base_name='product')
 
 
 urlpatterns=[
