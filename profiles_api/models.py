@@ -54,7 +54,7 @@ class ShopPage (models.Model):
 
 
 class Gallerie (models.Model):
-    pass
+    picture= models.ForeignKey(Picture, on_delete=models.CASCADE)
 
 
 class Picture (models.Model):
@@ -92,6 +92,8 @@ class CartManager(models.Manager):
 class Cart (models.Model):
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     number_of_products = models.IntegerField()
+    products = models.ArrayModelField(model_form_class= Product)
+    #products = models.ManyToManyField(Product)
 
 
 class ContactU (models.Model):
@@ -105,8 +107,8 @@ class ContactU (models.Model):
 
 
 class Store (models.Model):
-    area = models.CharField(max_length=255)
-    store_country = models.CharField(max_length=255)
+    store_area = models.CharField(max_length=255)
+
 
 
 

@@ -67,17 +67,19 @@ class ProductViewSet (viewsets.ModelViewSet):
 
 class ShopPageViewSet (viewsets.ViewSet):
     serializer_class=serializers.ShopPageSerializer
+    queryset=models.ShopPage.objects.all()
+    filter_backends = (filters.SearchFilter,)
 
-    def list(self, request):
-        queryset = ShopPage.objects.all()
-        serializer = ShopPageSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request, pk=None):
-        queryset = ShopPage.objects.all()
-        shop_page = get_object_or_404(queryset, pk=pk)
-        serializer = ShopPageSerializer(shop_page)
-        return Response(serializer.data)
+    # def list(self, request):
+    #     queryset = ShopPage.objects.all()
+    #     serializer = ShopPageSerializer(queryset, many=True)
+    #     return Response(serializer.data)
+    #
+    # def retrieve(self, request, pk=None):
+    #     queryset = ShopPage.objects.all()
+    #     shop_page = get_object_or_404(queryset, pk=pk)
+    #     serializer = ShopPageSerializer(shop_page)
+    #     return Response(serializer.data)
 
 
 
@@ -129,4 +131,7 @@ class StoreViewSet (viewsets.ModelViewSet):
     serializer_class=serializers.StoreSerializer
     queryset=models.Store.objects.all()
     filter_backends = (filters.SearchFilter,)
-    search_fields = ('area', 'city',)
+    search_fields = ('store_area',)
+
+
+#class BrandViewSet (viewsets.Model)
