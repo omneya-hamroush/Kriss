@@ -60,7 +60,8 @@ class AboutUSerializer (serializers.ModelSerializer):
 class StoreSerializer (serializers.ModelSerializer):
     class Meta:
         fields=(
-        'location',
+        'area',
+        'city',
         )
         model= models.Store
 

@@ -123,3 +123,10 @@ class CartViewSet (viewsets.ViewSet):
         cart = get_object_or_404(queryset, pk=pk)
         serializer = CartSerializer(cart)
         return Response(serializer.data)
+
+
+class StoreViewSet (viewsets.ModelViewSet):
+    serializer_class=serializers.StoreSerializer
+    queryset=models.Store.objects.all()
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('area', 'city',)

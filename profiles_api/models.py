@@ -105,7 +105,8 @@ class ContactU (models.Model):
 
 
 class Store (models.Model):
-    location = models.CharField(max_length=255)
+    area = models.CharField(max_length=255)
+    store_country = models.CharField(max_length=255)
 
 
 
