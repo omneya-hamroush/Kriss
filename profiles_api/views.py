@@ -11,6 +11,17 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.settings import api_settings
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import action
+
+# def get_permissions(self):
+#     """
+#     Instantiates and returns the list of permissions that this view requires.
+#     """
+#     if self.action == 'list':
+#         permission_classes = [IsAuthenticated]
+#     else:
+#         permission_classes = [IsAdmin]
+#     return [permission() for permission in permission_classes]
 
 
 class ProductViewSet (viewsets.ModelViewSet):
@@ -19,41 +30,47 @@ class ProductViewSet (viewsets.ModelViewSet):
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
 
+    def destroy(self, request, pk= None):
+        return Response({'http_method':'DELETE'})
+
+
 # class ProductViewSet (viewsets.ViewSet):
-#     serializer_class= serializers.ProductSerializer
+#      serializer_class= serializers.ProductSerializer
 #
-#     def list(self, request):
-#         queryset = Product.objects.all()
-#         serializer = ProductSerializer(queryset, many=True)
-#         return Response(serializer.data)
+#      def list(self, request):
+#          queryset = Product.objects.all()
+#          serializer = ProductSerializer(queryset, many=True)
+#          return Response(serializer.data)
 #
-#     def retrieve(self, request, pk=None):
-#         queryset = Product.objects.all()
-#         product = get_object_or_404(queryset, pk=pk)
-#         serializer = ProductSerializer(product)
-#         return Response(serializer.data)
+#      def retrieve(self, request, pk=None):
+#          queryset = Product.objects.all()
+#          product = get_object_or_404(queryset, pk=pk)
 #
-#     def create(self,request):
-#         serializer= self.serializer_class(data=request.data)
+#          serializer = ProductSerializer(product)
 #
-#         if serializer.is_valid():
-#             name=serializer.validated_data.get('name')
-#             message= f'New product {name}!'
-#             return Response ({'message':message})
-#         else:
-#             return Response(
-#             serializer.errors,
-#             status=status.HTTP_400_BAD_REQUEST
-#             )
+#          return Response(serializer.data)
 #
-#     def update(self, request, pk= None):
-#         return Response({'http_method':'PUT'})
+#      def create(self,request):
+#          serializer= self.serializer_class(data=request.data)
 #
-#     def partial_update(self, request, pk= None):
-#         return Response({'http_method':'PATCH'})
+#          if serializer.is_valid():
+#              name=serializer.validated_data.get('name')
+#              message= f'New product {name}!'
+#              return Response ({'message':message})
+#          else:
+#              return Response(
+#              serializer.errors,
+#              status=status.HTTP_400_BAD_REQUEST
+#              )
 #
-#     def destroy(self, request, pk= None):
-#         return Response({'http_method':'DELETE'})
+#      def update(self, request, pk= None):
+#          return Response({'http_method':'PUT'})
+#
+#      def partial_update(self, request, pk= None):
+#          return Response({'http_method':'PATCH'})
+#
+#      def destroy(self, request, pk= None):
+#          return Response({'http_method':'DELETE'})
 
     # def search(request):
     #     if request.method == 'GET':
@@ -65,10 +82,22 @@ class ProductViewSet (viewsets.ModelViewSet):
     #         return render(request,"",{})
 
 
-class ShopPageViewSet (viewsets.ViewSet):
+class ShopPageViewSet (viewsets.ModelViewSet):
     serializer_class=serializers.ShopPageSerializer
     queryset=models.ShopPage.objects.all()
-    filter_backends = (filters.SearchFilter,)
+
+    @action(detail=True, methods=['put'])
+    def add_to_cart(self, request, pk= None):
+        product=self.get_object()
+        serializer=ProductSerializer(data=request.data)
+        if serializer.is_valid():
+            product.add_to_cart(serializer.data['product'])
+            product.save()
+            return Response({'status': 'product added'})
+        else:
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
+
 
     # def list(self, request):
     #     queryset = ShopPage.objects.all()
@@ -136,13 +165,14 @@ class StoreViewSet (viewsets.ModelViewSet):
 
 
 class ContactUViewSet (viewsets.ModelViewSet):
-    serializer_class=serializers.ContactUSerializer
-    queryset=models.ContactU.objects.all()
+    serializer_class=serializers.ContactUsSerializer
+    queryset=models.ContactUs.objects.all()
+
 
 
 class AboutUViewSet (viewsets.ModelViewSet):
-    serializer_class=serializers.AboutUSerializer
-    queryset=models.AboutU.objects.all()
+    serializer_class=serializers.AboutUsSerializer
+    queryset=models.AboutUs.objects.all()
 
 
 
@@ -154,7 +184,7 @@ class BrandViewSet (viewsets.ModelViewSet):
 
 
 class CategorieViewSet (viewsets.ModelViewSet):
-    serializer_class=serializers.CategorieSerializer
-    queryset=models.Categorie.objects.all()
+    serializer_class=serializers.CategorySerializer
+    queryset=models.Category.objects.all()
     filter_backends = (filters.SearchFilter,)
     search_fields = ('category_name',)

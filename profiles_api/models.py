@@ -28,7 +28,7 @@ class Product (models.Model):
      price=models.DecimalField(max_digits=10, decimal_places=2)
      is_available = models.BooleanField(default=True)
      product_image = models.ImageField(blank=True, null=True, upload_to="pictures/%Y/%m/%D")
-     
+
 
      REQUIRED_FIELDS= ['name']
      objects= ProductManager()
@@ -58,15 +58,16 @@ class ShopPage (models.Model):
 
 
 
-class Gallerie (models.Model):
-    pass
-
+class Gallery (models.Model):
+    gallery_title= models.CharField(max_length=255)
+    class Meta:
+        verbose_name_plural = "galleries"
 
 class Picture (models.Model):
     title = models.CharField(max_length=255)
     subtitle=models.CharField(max_length=255)
     picture_upload= models.ImageField(blank=True, null=True, upload_to="pictures/%Y/%m/%D")
-    gallerie = models.ForeignKey(Gallerie, on_delete=models.CASCADE)
+    gallery = models.ForeignKey(Gallery, on_delete=models.CASCADE)
 
 
     def __str__(self):
@@ -74,10 +75,12 @@ class Picture (models.Model):
 
 
 
-class AboutU (models.Model):
+class AboutUs (models.Model):
     about = models.TextField(max_length=2000)
     get_to_know_us = models.TextField(max_length=3000)
 
+    def __unicode__(self):
+	    return 'About us'
 
 
 class CartManager(models.Manager):
@@ -101,13 +104,15 @@ class Cart (models.Model):
     products = models.ManyToManyField(Product)
     objects= CartManager()
 
-class ContactU (models.Model):
+class ContactUs (models.Model):
     client_name = models.CharField(max_length=255)
     client_email = models.CharField(max_length=255)
     subject = models.CharField(max_length=255)
     how_can_i_help = models.TextField(max_length=3000)
     working_hours = models.TextField(max_length=3000)
 
+    def __unicode__(self):
+	    return 'Contact us'
 
 
 # class HomePage (models.Model):
@@ -116,6 +121,9 @@ class ContactU (models.Model):
 
 class Store (models.Model):
     store_area = models.CharField(max_length=255)
+    class Meta:
+        verbose_name_plural = "stores"
+
 
 
 class Brand (models.Model):
@@ -123,16 +131,21 @@ class Brand (models.Model):
     is_featured = models.BooleanField()
 
 
+    class Meta:
+        verbose_name_plural = "brands"
+
     def __str__(self):
         return self.brand_name
 
 
 
 
-class Categorie (models.Model):
+class Category (models.Model):
     category_name = models.CharField(max_length=255)
     brands = models.ManyToManyField(Brand)
 
+    class Meta:
+        verbose_name_plural = "categories"
 
     def __str__(self):
         return self.category_name

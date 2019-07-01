@@ -11,6 +11,12 @@ class ProductSerializer (serializers.ModelSerializer):
             'price',
             'product_image',
         )
+        extra_kwargs = {
+            'name': {
+                'read_only': True,
+
+            }
+        }
         model = models.Product
     def create(self, validated_data):
 
@@ -35,7 +41,7 @@ class ShopPageSerializer (serializers.ModelSerializer):
         model = models.ShopPage
 
 
-class ContactUSerializer(serializers.ModelSerializer):
+class ContactUsSerializer(serializers.ModelSerializer):
     class Meta:
         fields = (
         'client_name',
@@ -44,20 +50,25 @@ class ContactUSerializer(serializers.ModelSerializer):
         'how_can_i_help',
         'working_hours',
         )
-        model= models.ContactU
+        model= models.ContactUs
+        extra_kwargs = {
+            'client_name': {
+                'write_only': True,
 
+            }
+        }
 
 class PictureSerializer (serializers.ModelSerializer):
     class Meta:
         fields = (
         'title',
         'subtitle',
-        'gallerie',
+        'gallery',
         )
         model = models.Picture
 
 
-class AboutUSerializer (serializers.ModelSerializer):
+class AboutUsSerializer (serializers.ModelSerializer):
     class Meta:
         fields=(
         'client_name',
@@ -66,7 +77,7 @@ class AboutUSerializer (serializers.ModelSerializer):
         'how_can_i_help',
         'working_hours',
         )
-        model = models.AboutU
+        model = models.AboutUs
 
 
 class StoreSerializer (serializers.ModelSerializer):
@@ -87,13 +98,13 @@ class BrandSerializer (serializers.ModelSerializer):
         model=models.Brand
 
 
-class CategorieSerializer (serializers.ModelSerializer):
+class CategorySerializer (serializers.ModelSerializer):
     class Meta:
         fields=(
         'category_name',
         'brands',
         )
-        model=models.Categorie
+        model=models.Category
 
 
 class CartSerializer (serializers.ModelSerializer):
@@ -101,5 +112,6 @@ class CartSerializer (serializers.ModelSerializer):
         fields=(
         'total_price',
         'number_of_products',
+        'products',
         )
         model=models.Cart

@@ -8,6 +8,8 @@ router.register('product-viewset', views.ProductViewSet, base_name='product-view
 router.register('shoppage-viewset', views.ShopPageViewSet, base_name= 'shoppage-viewset')
 router.register('picture-viewset', views.PictureViewSet, base_name= 'picture-viewset' )
 router.register('store-viewset', views.StoreViewSet, base_name= 'store-viewset')
+router.register('contact-viewset', views.ContactUViewSet, base_name= 'contact-viewset')
+
 
 urlpatterns=[
 #path('product-view/', views.ProductViewSet.as_view()),
