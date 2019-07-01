@@ -4,12 +4,12 @@ from django.contrib.auth.models import PermissionsMixin
 
 
 class ProductManager(models.Manager):
-    def create_product(self, name, description, price):
+    def create_product(self, name, description, price, product_image):
         if not name:
             raise ValueError('Product must have a name')
 
 
-        product = self.model(name=email, description=description, price=price)
+        product = self.model(name=name, description=description, price=price, product_image=product_image)
 
 
         product.save(using=self._db)
@@ -22,11 +22,17 @@ class Product (models.Model):
      name = models.CharField(max_length=255)
      description=models.TextField(max_length=2000)
      price=models.DecimalField(max_digits=10, decimal_places=2)
-     is_available = models.BooleanField()
+     is_available = models.BooleanField(default=True)
+     product_image = models.ImageField(blank=True, null=True, upload_to="pictures/%Y/%m/%D")
 
      REQUIRED_FIELDS= ['name']
      objects= ProductManager()
-
+    #  model_pic= models.ImageField(upload_to=upload_image, default='blog/images/already.png')
+    #
+    #
+    #
+    # def upload_image(self, filename):
+    #     return 'post/{}/{}'.format(self.name, filename)
 
      def __str__(self):
         return self.name
@@ -54,6 +60,7 @@ class Gallerie (models.Model):
 class Picture (models.Model):
     title = models.CharField(max_length=255)
     subtitle=models.CharField(max_length=255)
+    picture_upload= models.ImageField(blank=True, null=True, upload_to="pictures/%Y/%m/%D")
     gallerie = models.ForeignKey(Gallerie, on_delete=models.CASCADE)
 
 

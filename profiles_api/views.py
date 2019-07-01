@@ -38,4 +38,13 @@ class ProductViewSet (viewsets.ViewSet):
         return Response({'http_method':'PATCH'})
 
     def destroy(self, request, pk= None):
-        return Response({'http_method':'DELETE'})            
+        return Response({'http_method':'DELETE'})
+
+    # def search(request):
+    #     if request.method == 'GET':
+    #         product_name =  request.GET.get('search')
+    #     try:
+    #         status = Add_prod.objects.filter(Product_name=product_name)
+    #         return render(request,"",{"products":status})
+    #     else:
+    #         return render(request,"",{})

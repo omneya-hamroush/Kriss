@@ -24,3 +24,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('profiles_api.urls'))
 ]
+
+
+# if settings.DEBUG:
+#     urlpatterns+=[
+#     url(r'^media/(?P<path>.*)$',serve {
+#     'document_root': settings.MEDIA_ROOT,
+#     }),
+#     ]
