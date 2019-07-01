@@ -8,5 +8,6 @@ router.register('product', views.ProductViewSet, base_name='product')
 
 
 urlpatterns=[
+path('product-view/', views.ProductViewSet.as_view()),
 path('',include(router.urls))
 ]

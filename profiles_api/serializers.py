@@ -74,10 +74,19 @@ class BrandSerializer (serializers.ModelSerializer):
         model=models.Brand
 
 
-class Categorie (serializes.ModelSerializer):
+class CategorieSerializer (serializers.ModelSerializer):
     class Meta:
         fields=(
         'category_name',
         'brands',
         )
         model=models.Categorie
+
+
+class CartSerializer (serializers.ModelSerializer):
+    class Meta:
+        fields=(
+        'total_price',
+        'number_of_products',
+        )
+        model=models.Cart
