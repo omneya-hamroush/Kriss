@@ -35,6 +35,18 @@ class ShopPageSerializer (serializers.ModelSerializer):
         model = models.ShopPage
 
 
+class ContactUSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = (
+        'client_name',
+        'client_email',
+        'subject',
+        'how_can_i_help',
+        'working_hours',
+        )
+        model= models.ContactU
+
+
 class PictureSerializer (serializers.ModelSerializer):
     class Meta:
         fields = (

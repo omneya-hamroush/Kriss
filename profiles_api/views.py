@@ -83,48 +83,49 @@ class ShopPageViewSet (viewsets.ViewSet):
 
 
 
-class PictureViewSet (viewsets.ViewSet):
+class PictureViewSet (viewsets.ModelViewSet):
     serializer_class = serializers.PictureSerializer
+    queryset=models.Picture.objects.all()
 
-    def list(self, request):
-        queryset = Picture.objects.all()
-        serializer = PictureSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request, pk=None):
-        queryset = Picture.objects.all()
-        picture = get_object_or_404(queryset, pk=pk)
-        serializer = PictureSerializer(picture)
-        return Response(serializer.data)
-
-
-    def create(self,request):
-        serializer= self.serializer_class(data=request.data)
-
-        if serializer.is_valid():
-            title=serializer.validated_data.get('name')
-            message= f'New product {name}!'
-            return Response ({'message':message})
-        else:
-            return Response(
-            serializer.errors,
-            status=status.HTTP_400_BAD_REQUEST
-            )
+    # def list(self, request):
+    #     queryset = Picture.objects.all()
+    #     serializer = PictureSerializer(queryset, many=True)
+    #     return Response(serializer.data)
+    #
+    # def retrieve(self, request, pk=None):
+    #     queryset = Picture.objects.all()
+    #     picture = get_object_or_404(queryset, pk=pk)
+    #     serializer = PictureSerializer(picture)
+    #     return Response(serializer.data)
+    #
+    #
+    # def create(self,request):
+    #     serializer= self.serializer_class(data=request.data)
+    #
+    #     if serializer.is_valid():
+    #         title=serializer.validated_data.get('name')
+    #         message= f'New product {name}!'
+    #         return Response ({'message':message})
+    #     else:
+    #         return Response(
+    #         serializer.errors,
+    #         status=status.HTTP_400_BAD_REQUEST
+    #         )
 
 class CartViewSet (viewsets.ViewSet):
     serializer_class=serializers.CartSerializer
+    queryset=models.Cart.objects.all()
 
-
-    def list(self, request):
-        queryset = Cart.objects.all()
-        serializer = CartSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request, pk=None):
-        queryset = Cart.objects.all()
-        cart = get_object_or_404(queryset, pk=pk)
-        serializer = CartSerializer(cart)
-        return Response(serializer.data)
+    # def list(self, request):
+    #     queryset = Cart.objects.all()
+    #     serializer = CartSerializer(queryset, many=True)
+    #     return Response(serializer.data)
+    #
+    # def retrieve(self, request, pk=None):
+    #     queryset = Cart.objects.all()
+    #     cart = get_object_or_404(queryset, pk=pk)
+    #     serializer = CartSerializer(cart)
+    #     return Response(serializer.data)
 
 
 class StoreViewSet (viewsets.ModelViewSet):
@@ -134,4 +135,26 @@ class StoreViewSet (viewsets.ModelViewSet):
     search_fields = ('store_area',)
 
 
-#class BrandViewSet (viewsets.Model)
+class ContactUViewSet (viewsets.ModelViewSet):
+    serializer_class=serializers.ContactUSerializer
+    queryset=models.ContactU.objects.all()
+
+
+class AboutUViewSet (viewsets.ModelViewSet):
+    serializer_class=serializers.AboutUSerializer
+    queryset=models.AboutU.objects.all()
+
+
+
+class BrandViewSet (viewsets.ModelViewSet):
+    serializer_class=serializers.BrandSerializer
+    queryset=models.Brand.objects.all()
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('brand_name',)
+
+
+class CategorieViewSet (viewsets.ModelViewSet):
+    serializer_class=serializers.CategorieSerializer
+    queryset=models.Categorie.objects.all()
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('category_name',)

@@ -3,6 +3,10 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 
 
+
+
+
+
 class ProductManager(models.Manager):
     def create_product(self, name, description, price, product_image):
         if not name:
@@ -24,6 +28,7 @@ class Product (models.Model):
      price=models.DecimalField(max_digits=10, decimal_places=2)
      is_available = models.BooleanField(default=True)
      product_image = models.ImageField(blank=True, null=True, upload_to="pictures/%Y/%m/%D")
+     
 
      REQUIRED_FIELDS= ['name']
      objects= ProductManager()
@@ -54,7 +59,7 @@ class ShopPage (models.Model):
 
 
 class Gallerie (models.Model):
-    picture= models.ForeignKey(Picture, on_delete=models.CASCADE)
+    pass
 
 
 class Picture (models.Model):
@@ -92,9 +97,9 @@ class CartManager(models.Manager):
 class Cart (models.Model):
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     number_of_products = models.IntegerField()
-    products = models.ArrayModelField(model_form_class= Product)
-    #products = models.ManyToManyField(Product)
-
+    #products = models.ArrayField(model_form_class= Product)
+    products = models.ManyToManyField(Product)
+    objects= CartManager()
 
 class ContactU (models.Model):
     client_name = models.CharField(max_length=255)
@@ -105,11 +110,12 @@ class ContactU (models.Model):
 
 
 
+# class HomePage (models.Model):
+#     featured_brands=models.Image
+#     oneToMany relationship with brands
 
 class Store (models.Model):
     store_area = models.CharField(max_length=255)
-
-
 
 
 class Brand (models.Model):
@@ -119,6 +125,7 @@ class Brand (models.Model):
 
     def __str__(self):
         return self.brand_name
+
 
 
 
