@@ -16,6 +16,8 @@ from rest_framework.permissions import IsAuthenticated
 class ProductViewSet (viewsets.ModelViewSet):
     serializer_class=serializers.ProductSerializer
     queryset=models.Product.objects.all()
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
 
 # class ProductViewSet (viewsets.ViewSet):
 #     serializer_class= serializers.ProductSerializer
