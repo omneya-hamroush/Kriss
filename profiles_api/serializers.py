@@ -3,6 +3,30 @@ from profiles_api import models
 
 
 
+# class UserProfileSerializer(serializers.ModelSerializer):
+#
+#
+#     class Meta:
+#         model = models.UserProfile
+#         fields = ('id', 'email', 'name', 'password')
+#         extra_kwargs = {
+#             'password': {
+#                 'write_only': True,
+#                 'style': {'input_type': 'password'}
+#             }
+#         }
+#
+#     def create(self, validated_data):
+#
+#         user = models.UserProfile.objects.create_user(
+#             email=validated_data['email'],
+#             name=validated_data['name'],
+#             password=validated_data['password']
+#         )
+#
+#         return user
+
+
 class ProductSerializer (serializers.ModelSerializer):
     class Meta:
         fields = (
@@ -11,12 +35,7 @@ class ProductSerializer (serializers.ModelSerializer):
             'price',
             'product_image',
         )
-        extra_kwargs = {
-            'name': {
-                'read_only': True,
 
-            }
-        }
         model = models.Product
     def create(self, validated_data):
 
@@ -51,12 +70,16 @@ class ContactUsSerializer(serializers.ModelSerializer):
         'working_hours',
         )
         model= models.ContactUs
-        extra_kwargs = {
-            'client_name': {
-                'write_only': True,
 
-            }
-        }
+
+
+class GallerySerializer (serializers.ModelSerializer):
+    class Meta:
+        fields= (
+        'gallery_title',
+        )
+        model=models.Gallery
+
 
 class PictureSerializer (serializers.ModelSerializer):
     class Meta:
