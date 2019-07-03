@@ -25,33 +25,49 @@ from django_filters.rest_framework import DjangoFilterBackend
 class ProductViewSet (viewsets.ModelViewSet):
     serializer_class=serializers.ProductSerializer
     queryset=models.Product.objects.all()
-    # filter_backends = (DjangoFilterBackend,)
+    filter_backends = (DjangoFilterBackend,)
     # filterset_fields = ('name',)
-    # search_fields = ('name',)
+    search_fields = ('name',)
     authentication_classes = (TokenAuthentication, )
     permission_classes = [permissions.IsAdminUser]
 
+    def get_queryset(self):
+        queryset = super(ProductViewSet, self).get_queryset().filter(
+            latest=True
+        )
+        #order by
 
 
-class ShopPageViewSet (viewsets.ModelViewSet):
-    serializer_class=serializers.ShopPageSerializer
-    queryset=models.ShopPage.objects.all()
-    authentication_classes = (TokenAuthentication, )
-    permission_classes = [permissions.IsAdminUser]
 
-    @action(detail=True, methods=['put'],url_path="add_to_cart", url_name="add_to_cart")
-    def add_to_cart(self, request, pk= None):
-        product=self.get_object()
-        serializer=serializers.ProductSerializer(data=request.data)
-        if serializer.is_valid():
-            print("i am in if")
-            product.add_to_cart(serializer.data['product'])
-            product.save()
-            return Response({'status': 'product added'})
-        else:
-            print("i am on else")
-            return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
+
+    # def add_to_cart(self, request, pk=None):
+    #     product= self.get_object()
+    #     serializer= serializers.ProductSerializer(data=request.data)
+    #     if serializer.is_valid():
+    #         if request.method == 'PUT':
+    #             product.add_to_cart(serializer.data['product'])
+    #             product.save()
+    #             return Response({'status': 'product added'})
+    #         else:
+    #             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+    # @action(detail=True, methods=['put'],url_path="add_to_cart", url_name="add_to_cart")
+    # def add_to_cart(self, request, pk= None):
+    #     product=self.get_object()
+    #     serializer=serializers.ProductSerializer(data=request.data)
+    #     if serializer.is_valid():
+    #         print("i am in if")
+    #         product.add_to_cart(serializer.data['product'])
+    #         product.save()
+    #         return Response({'status': 'product added'})
+    #     else:
+    #         print("i am on else")
+    #         return Response(serializer.errors,
+    #                         status=status.HTTP_400_BAD_REQUEST)
 
 
     # def list(self, request):
@@ -75,22 +91,16 @@ class PictureViewSet (viewsets.ModelViewSet):
 
 
 
-
-class GalleryViewSet (viewsets.ModelViewSet):
-    serializer_class = serializers.GallerySerializer
-    queryset=models.Gallery.objects.all()
-    authentication_classes = (TokenAuthentication, )
-    permission_classes = [permissions.IsAdminUser]
-
-
-
 class CartViewSet (viewsets.ModelViewSet):
     serializer_class=serializers.CartSerializer
     queryset=models.Cart.objects.all()
-    authentication_classes = (TokenAuthentication, )
-    permission_classes = [permissions.IsAdminUser]
+    # authentication_classes = (TokenAuthentication, )
+    # permission_classes = [permissions.IsAdminUser]
 
-    def update(self, request, pk=None):
+
+
+
+
 
     # def list(self, request):
     #     queryset = Cart.objects.all()
@@ -118,6 +128,9 @@ class ContactUsViewSet (viewsets.ModelViewSet):
     queryset=models.ContactUs.objects.all()
     # authentication_classes = (TokenAuthentication, )
     # permission_classes = [permissions.IsAdminUser]
+    def send_comment (self, request, pk=None):
+        contact_us=self.get_object()
+
 
     @action(detail=True, methods=['post'])
     def send_comment(self, request, pk=None):
@@ -171,3 +184,28 @@ class CategoryViewSet (viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     filter_backends = (filters.SearchFilter,)
     search_fields = ('category_name',)
+
+
+class CartItemViewSet (viewsets.ModelViewSet):
+    serializer_class=serializers.CartItemSerializer
+    queryset=models.CartItem.objects.all()
+
+    def create(self, request):
+        serializer= serializers.CartItemSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            # cart= models.Cart.objects.get(pk=int(request.GET['cart_id']))
+            # product= models.Product.objects.get(pk=int(request.GET['product_id']))
+            # cart=serializer.validated_data.get('cart')
+            # product=serializer.validated_data.get('product')
+            #message= f'new cart item {cart, product}!'
+            return Response ({'data':serializer.data})
+        else:
+            return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+            )
+
+
+# def add_to_cart (self,request):
+#     product= Product.objects.get(pk=int(request.GET['product_id']))
