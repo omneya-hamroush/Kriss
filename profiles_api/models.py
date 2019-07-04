@@ -128,6 +128,11 @@ class Cart (models.Model):
     objects= CartManager()
 
 
+class CartItem (models.Model):
+
+    cart= models.ForeignKey(Cart, on_delete= models.CASCADE)
+    product= models.ForeignKey(Product, on_delete= models.CASCADE)
+
 
 
 
@@ -161,10 +166,3 @@ class Store (models.Model):
     location_latitude = models.CharField(max_length=255, null=True)
     class Meta:
         verbose_name_plural = "stores"
-
-
-
-class CartItem (models.Model):
-
-    cart= models.ForeignKey(Cart, on_delete= models.CASCADE)
-    product= models.ForeignKey(Product, on_delete= models.CASCADE)

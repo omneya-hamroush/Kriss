@@ -14,10 +14,11 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.authentication import TokenAuthentication
-
+from django.db.models import Q
 from rest_framework.authtoken.views import ObtainAuthToken
 
 from rest_framework import permissions
+from django.test.client import Client
 
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -28,14 +29,80 @@ class ProductViewSet (viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     # filterset_fields = ('name',)
     search_fields = ('name',)
-    authentication_classes = (TokenAuthentication, )
-    permission_classes = [permissions.IsAdminUser]
+    # authentication_classes = (TokenAuthentication, )
+    # permission_classes = [permissions.IsAdminUser]
 
     def get_queryset(self):
-        queryset = super(ProductViewSet, self).get_queryset().filter(
-            latest=True
-        )
-        #order by
+        queryset = models.Product.objects.all()
+        latest = self.request.query_params.get('latest')
+        best_seller = self.request.query_params.get('best_seller')
+        if latest:
+            queryset = queryset.filter(latest=latest)
+        elif best_seller:
+            queryset = queryset.filter(best_seller=best_seller)
+            return queryset
+
+
+    # def get_queryset(self):
+    #     queryset = super(ProductViewSet, self).get_queryset().filter(
+    #         in_stock=True
+    #     )
+    #     query_params = self.request.query_params
+    #     query = Q()
+    #     search = query_params.get('search')
+    #     if search:
+    #         query.add(Q(name__icontains=search), Q.AND)
+    #
+    #     # ........ mack pro filters .......
+    #     if query_params.get('macbookpro') == 'true':
+    #         queryset = queryset.filter(subcategory__name='MacBook Pro')
+    #     if query_params.get('15inch') == 'true':
+    #         queryset = queryset.filter(subcategory__name='15inch')
+    #     if query_params.get('13inch') == 'true':
+    #         queryset = queryset.filter(subcategory__name='13inch')
+    #     # ........ filters .......
+    #     if query_params.get('subcategory_id'):
+    #         query.add(
+    #             Q(subcategory__id=query_params.get('subcategory_id')), Q.AND)
+    #
+    #     if query_params.get('price_low'):
+    #         query.add(
+    #             Q(
+    #                 price__gte=query_params.get('price_low'),
+    #                 productproperties__isnull=True
+    #             ) |
+    #             Q(
+    #                 productproperties__price__gte=query_params.get(
+    #                     'price_low'),
+    #                 productproperties__isnull=False
+    #             ),
+    #             Q.AND
+    #         )
+    #     if query_params.get('price_heigh'):
+    #         query.add(
+    #             Q(
+    #                 price__lte=query_params.get('price_heigh'),
+    #                 productproperties__isnull=True
+    #             ) |
+    #             Q(
+    #                 productproperties__price__lte=query_params.get(
+    #                     'price_heigh'),
+    #                 productproperties__isnull=False
+    #             ),
+    #             Q.AND
+    #         )
+    #     if query_params.get('brand_id'):
+    #         query.add(Q(brand__id=query_params.get('brand_id')), Q.AND)
+    #
+    #     queryset = queryset.filter(query)
+    #
+    #     # ........ sort .......
+    #     if query_params.get('sort'):
+    #         queryset = queryset.order_by(query_params.get('sort'))
+    #
+    #     return queryset
+
+
 
 
 
@@ -128,22 +195,32 @@ class ContactUsViewSet (viewsets.ModelViewSet):
     queryset=models.ContactUs.objects.all()
     # authentication_classes = (TokenAuthentication, )
     # permission_classes = [permissions.IsAdminUser]
-    def send_comment (self, request, pk=None):
-        contact_us=self.get_object()
+    # def send_comment (self, request, pk=None):
+    #     contact_us=self.get_object()
 
 
-    @action(detail=True, methods=['post'])
-    def send_comment(self, request, pk=None):
-        contact_us = self.get_object()
-        serializer = ContactUsSerializer(data=request.data)
-        if serializer.is_valid():
-            print ("in if")
-            contact_us.send_comment(serializer.data['contact us'])
-            contact_us.save()
-            return Response({'status': 'comment sent'})
-        else:
-            return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
+    # @action(detail=True, methods=['post'])
+    # def send_comment(self, request, pk=None):
+    #     contact_us = self.get_object()
+    #     serializer = ContactUsSerializer(data=request.data)
+    #     if serializer.is_valid():
+    #         print ("in if")
+    #         contact_us.send_comment(serializer.data['contact us'])
+    #         contact_us.save()
+    #         return Response({'status': 'comment sent'})
+    #     else:
+    #         return Response(serializer.errors,
+    #                         status=status.HTTP_400_BAD_REQUEST)
+
+    # def send_message (self,request):
+    #     if request.method=='POST':
+    #         serializer = ContactUsSerializer(data=request.data)
+    #         if serializer.is_valid():
+    #             serializer.save()
+    #             return Response({'data':serializer.data})
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 
 
