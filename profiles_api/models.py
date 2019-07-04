@@ -5,13 +5,9 @@ from django.contrib.auth.models import AbstractBaseUser,BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 
 
-
-
 class Brand (models.Model):
     brand_name = models.CharField(max_length=255)
     is_featured = models.BooleanField()
-
-
     class Meta:
         verbose_name_plural = "brands"
 
@@ -21,8 +17,6 @@ class Brand (models.Model):
 
 class Category (models.Model):
     category_name = models.CharField(max_length=255)
-
-
     class Meta:
         verbose_name_plural = "categories"
 
@@ -30,15 +24,11 @@ class Category (models.Model):
         return self.category_name
 
 
-
-
 class Family (models.Model):
     brands= models.ForeignKey(Brand, on_delete=models.CASCADE)
     is_featured= models.BooleanField(default=False)
     class Meta:
         verbose_name_plural = "families"
-
-
 
 
 class ProductManager(models.Manager):
@@ -73,9 +63,6 @@ class Product (models.Model):
      REQUIRED_FIELDS= ['name']
      objects= ProductManager()
     #  model_pic= models.ImageField(upload_to=upload_image, default='blog/images/already.png')
-    #
-    #
-    #
     # def upload_image(self, filename):
     #     return 'post/{}/{}'.format(self.name, filename)
 
@@ -174,6 +161,8 @@ class Store (models.Model):
         verbose_name_plural = "stores"
 
 
+
+
 class Order (models.Model):
     client_number= models.CharField(max_length=255, null = True, blank=True)
     client_address= models.TextField(max_length=2000)
@@ -183,3 +172,6 @@ class Order (models.Model):
     is_deliverd = models.BooleanField(default=False)
     is_paid = models.BooleanField(default=False)
     product_id = models.IntegerField(null=True, blank=True)
+    currency= models.CharField(max_length=255, choices=(('EGP','EGP'),('$', '$')), null=True)
+    total_amount= models.DecimalField(max_digits=8, decimal_places=2, null=True)
+    #payment_date= models.DateTimeField(default=dteNow)

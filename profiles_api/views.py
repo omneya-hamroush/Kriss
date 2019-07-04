@@ -24,6 +24,14 @@ from django.test.client import Client
 from django_filters.rest_framework import DjangoFilterBackend
 
 
+class FamilyViewSet (viewsets.ModelViewSet):
+    serializer= serializers.FamilySerializer
+    queryset= models.Family.objects.all()
+    authentication_classes = (TokenAuthentication, )
+    permission_classes = [permissions.IsAdminUser]
+
+
+
 class ProductViewSet (viewsets.ModelViewSet):
     serializer_class=serializers.ProductSerializer
     queryset=models.Product.objects.all()
@@ -116,40 +124,36 @@ class ContactUsViewSet (viewsets.ModelViewSet):
     #
     #     return Response ({'data':text.data})
 
-    def create (self, request):
-        subject = 'New subject'
-        # data=request.data
-        form_subject= models.ContactUs.objects.create(
-        client_name=request.data.get('client_name'),
-        client_email=request.data.get('client_email'),
-        subject=request.data.get('subject'),
-        how_can_i_help= request.data.get('how_can_i_help')
-
-        )
-        form_subject.save()
-        message = "client_name: %s<br>client_email: %s<br>subject: %s<br>how_can_i_help: %s" % (
-            form_subject.client_name,
-            form_subject.client_email,
-            form_subject.subject,
-            form_subject.how_can_i_help
-        )
-        subject = '%s: %s #%d: %s' % (
-            subject,
-            form_subject.client_name,
-            form_subject.client_email,
-            form_subject.id
-        )
-        send_email(
-            message=message,
-            subject=subject,
-            recipients=['omnia.hamroush@student.guc.edu.eg']
-        )
-        return Response("Thanks, your comment has been sent")
-
-
-
-
-
+    # def create (self, request):
+    #     subject = 'New subject'
+    #     # data=request.data
+    #     form_subject= models.ContactUs.objects.create(
+    #     client_name=request.data.get('client_name'),
+    #     client_email=request.data.get('client_email'),
+    #     subject=request.data.get('subject'),
+    #     how_can_i_help= request.data.get('how_can_i_help')
+    #
+    #     )
+    #     form_subject.save()
+    #     message = "client_name: %s<br>client_email: %s<br>subject: %s<br>how_can_i_help: %s" % (
+    #         form_subject.client_name,
+    #         form_subject.client_email,
+    #         form_subject.subject,
+    #         form_subject.how_can_i_help
+    #     )
+    #     subject = '%s: %s #%d: %s' % (
+    #         subject,
+    #         form_subject.client_name,
+    #         form_subject.client_email,
+    #         form_subject.id
+    #     )
+    #     send_email(
+    #         message=message,
+    #         subject=subject,
+    #         recipients=['omnia.hamroush@student.guc.edu.eg']
+    #     )
+    #     return Response("Thanks, your comment has been sent")
+    #
 
 
 class AboutUsViewSet (viewsets.ModelViewSet):
@@ -226,12 +230,5 @@ class CartItemViewSet (viewsets.ModelViewSet):
 class LatestOfferViewSet (viewsets.ModelViewSet):
     serializer= serializers.LatestOfferSerializer
     queryset=models.LatestOffer.objects.all()
-    authentication_classes = (TokenAuthentication, )
-    permission_classes = [permissions.IsAdminUser]
-
-
-class FamilyViewSet (viewsets.ModelViewSet):
-    serializer= serializers.FamilySerializer
-    queryset= models.Family.objects.all()
     authentication_classes = (TokenAuthentication, )
     permission_classes = [permissions.IsAdminUser]

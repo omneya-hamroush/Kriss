@@ -84,11 +84,8 @@ class PictureSerializer (serializers.ModelSerializer):
 class AboutUsSerializer (serializers.ModelSerializer):
     class Meta:
         fields=(
-        'client_name',
-        'client_email',
-        'subject',
-        'how_can_i_help',
-        'working_hours',
+        'about',
+        'get_to_know_us',
         )
         model = models.AboutUs
 
@@ -162,3 +159,4 @@ class LatestOfferSerializer (serializers.ModelSerializer):
         'offer_link',
         'offer_width',
         )
+        model=models.LatestOffer
