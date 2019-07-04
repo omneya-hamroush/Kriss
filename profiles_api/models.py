@@ -103,6 +103,8 @@ class AboutUs (models.Model):
 
     def __unicode__(self):
 	    return 'About us'
+    class Meta:
+        verbose_name_plural = "About us"
 
 
 class CartManager(models.Manager):
@@ -145,6 +147,10 @@ class ContactUs (models.Model):
 
     def __unicode__(self):
 	    return 'Contact us'
+    class Meta:
+        verbose_name_plural = "Contact us"
+
+
 
 
 class LatestOffer (models.Model):
@@ -166,3 +172,14 @@ class Store (models.Model):
     location_latitude = models.CharField(max_length=255, null=True)
     class Meta:
         verbose_name_plural = "stores"
+
+
+class Order (models.Model):
+    client_number= models.CharField(max_length=255, null = True, blank=True)
+    client_address= models.TextField(max_length=2000)
+    client_email=models.CharField(max_length=255)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    order_date= models.DateTimeField()
+    is_deliverd = models.BooleanField(default=False)
+    is_paid = models.BooleanField(default=False)
+    product_id = models.IntegerField(null=True, blank=True)

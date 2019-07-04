@@ -6,6 +6,7 @@ from profiles_api import serializers
 from profiles_api import models
 from rest_framework.authentication import TokenAuthentication
 #from profiles_api import permissions
+# from services.email_helper import send_email
 from rest_framework import filters
 from rest_framework import status
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -14,7 +15,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.authentication import TokenAuthentication
-from django.db.models import Q
+#from django.db.models import Q
 from rest_framework.authtoken.views import ObtainAuthToken
 
 from rest_framework import permissions
@@ -29,125 +30,20 @@ class ProductViewSet (viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     # filterset_fields = ('name',)
     search_fields = ('name',)
-    # authentication_classes = (TokenAuthentication, )
-    # permission_classes = [permissions.IsAdminUser]
+    authentication_classes = (TokenAuthentication, )
+    permission_classes = [permissions.IsAdminUser]
 
+    #sort by
     def get_queryset(self):
         queryset = models.Product.objects.all()
-        latest = self.request.query_params.get('latest')
-        best_seller = self.request.query_params.get('best_seller')
-        if latest:
-            queryset = queryset.filter(latest=latest)
-        elif best_seller:
-            queryset = queryset.filter(best_seller=best_seller)
-            return queryset
-
-
-    # def get_queryset(self):
-    #     queryset = super(ProductViewSet, self).get_queryset().filter(
-    #         in_stock=True
-    #     )
-    #     query_params = self.request.query_params
-    #     query = Q()
-    #     search = query_params.get('search')
-    #     if search:
-    #         query.add(Q(name__icontains=search), Q.AND)
-    #
-    #     # ........ mack pro filters .......
-    #     if query_params.get('macbookpro') == 'true':
-    #         queryset = queryset.filter(subcategory__name='MacBook Pro')
-    #     if query_params.get('15inch') == 'true':
-    #         queryset = queryset.filter(subcategory__name='15inch')
-    #     if query_params.get('13inch') == 'true':
-    #         queryset = queryset.filter(subcategory__name='13inch')
-    #     # ........ filters .......
-    #     if query_params.get('subcategory_id'):
-    #         query.add(
-    #             Q(subcategory__id=query_params.get('subcategory_id')), Q.AND)
-    #
-    #     if query_params.get('price_low'):
-    #         query.add(
-    #             Q(
-    #                 price__gte=query_params.get('price_low'),
-    #                 productproperties__isnull=True
-    #             ) |
-    #             Q(
-    #                 productproperties__price__gte=query_params.get(
-    #                     'price_low'),
-    #                 productproperties__isnull=False
-    #             ),
-    #             Q.AND
-    #         )
-    #     if query_params.get('price_heigh'):
-    #         query.add(
-    #             Q(
-    #                 price__lte=query_params.get('price_heigh'),
-    #                 productproperties__isnull=True
-    #             ) |
-    #             Q(
-    #                 productproperties__price__lte=query_params.get(
-    #                     'price_heigh'),
-    #                 productproperties__isnull=False
-    #             ),
-    #             Q.AND
-    #         )
-    #     if query_params.get('brand_id'):
-    #         query.add(Q(brand__id=query_params.get('brand_id')), Q.AND)
-    #
-    #     queryset = queryset.filter(query)
-    #
-    #     # ........ sort .......
-    #     if query_params.get('sort'):
-    #         queryset = queryset.order_by(query_params.get('sort'))
-    #
-    #     return queryset
-
-
-
-
-
-
-    # def add_to_cart(self, request, pk=None):
-    #     product= self.get_object()
-    #     serializer= serializers.ProductSerializer(data=request.data)
-    #     if serializer.is_valid():
-    #         if request.method == 'PUT':
-    #             product.add_to_cart(serializer.data['product'])
-    #             product.save()
-    #             return Response({'status': 'product added'})
-    #         else:
-    #             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
-
-
-
-
-
-    # @action(detail=True, methods=['put'],url_path="add_to_cart", url_name="add_to_cart")
-    # def add_to_cart(self, request, pk= None):
-    #     product=self.get_object()
-    #     serializer=serializers.ProductSerializer(data=request.data)
-    #     if serializer.is_valid():
-    #         print("i am in if")
-    #         product.add_to_cart(serializer.data['product'])
-    #         product.save()
-    #         return Response({'status': 'product added'})
-    #     else:
-    #         print("i am on else")
-    #         return Response(serializer.errors,
-    #                         status=status.HTTP_400_BAD_REQUEST)
-
-
-    # def list(self, request):
-    #     queryset = ShopPage.objects.all()
-    #     serializer = ShopPageSerializer(queryset, many=True)
-    #     return Response(serializer.data)
-    #
-    # def retrieve(self, request, pk=None):
-    #     queryset = ShopPage.objects.all()
-    #     shop_page = get_object_or_404(queryset, pk=pk)
-    #     serializer = ShopPageSerializer(shop_page)
-    #     return Response(serializer.data)
-
+        query_params = self.request.query_params
+        latest = self.request.query_params.get('latest', None)
+        best_seller= self.request.query_params.get('best_seller',None)
+        if latest is not None:
+            queryset = queryset.filter(latest=True)
+        if best_seller is not None:
+            queryset = queryset.filter(best_seller=True)
+        return queryset
 
 
 class PictureViewSet (viewsets.ModelViewSet):
@@ -161,24 +57,18 @@ class PictureViewSet (viewsets.ModelViewSet):
 class CartViewSet (viewsets.ModelViewSet):
     serializer_class=serializers.CartSerializer
     queryset=models.Cart.objects.all()
-    # authentication_classes = (TokenAuthentication, )
-    # permission_classes = [permissions.IsAdminUser]
-
-
-
-
-
 
     # def list(self, request):
     #     queryset = Cart.objects.all()
     #     serializer = CartSerializer(queryset, many=True)
     #     return Response(serializer.data)
     #
-    # def retrieve(self, request, pk=None):
-    #     queryset = Cart.objects.all()
-    #     cart = get_object_or_404(queryset, pk=pk)
-    #     serializer = CartSerializer(cart)
-    #     return Response(serializer.data)
+    def retrieve(self, request, pk=None):
+        queryset = Cart.objects.all()
+        cart = get_object_or_404(queryset, pk=pk)
+        serializer = CartSerializer(cart)
+        return Response(serializer.data)
+
 
 
 class StoreViewSet (viewsets.ModelViewSet):
@@ -219,6 +109,44 @@ class ContactUsViewSet (viewsets.ModelViewSet):
     #             serializer.save()
     #             return Response({'data':serializer.data})
     #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # def send_comment(self, request):
+    #     form=UserMessageForm(request.POST)
+    #     if form.is_valid():
+    #         text=form.cleaned_data
+    #
+    #     return Response ({'data':text.data})
+
+    def create (self, request):
+        subject = 'New subject'
+        # data=request.data
+        form_subject= models.ContactUs.objects.create(
+        client_name=request.data.get('client_name'),
+        client_email=request.data.get('client_email'),
+        subject=request.data.get('subject'),
+        how_can_i_help= request.data.get('how_can_i_help')
+
+        )
+        form_subject.save()
+        message = "client_name: %s<br>client_email: %s<br>subject: %s<br>how_can_i_help: %s" % (
+            form_subject.client_name,
+            form_subject.client_email,
+            form_subject.subject,
+            form_subject.how_can_i_help
+        )
+        subject = '%s: %s #%d: %s' % (
+            subject,
+            form_subject.client_name,
+            form_subject.client_email,
+            form_subject.id
+        )
+        send_email(
+            message=message,
+            subject=subject,
+            recipients=['omnia.hamroush@student.guc.edu.eg']
+        )
+        return Response("Thanks, your comment has been sent")
+
+
 
 
 
@@ -254,6 +182,8 @@ class BrandViewSet (viewsets.ModelViewSet):
 
 
 
+
+
 class CategoryViewSet (viewsets.ModelViewSet):
     serializer_class=serializers.CategorySerializer
     queryset=models.Category.objects.all()
@@ -261,6 +191,11 @@ class CategoryViewSet (viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     filter_backends = (filters.SearchFilter,)
     search_fields = ('category_name',)
+
+    def list (self,request):
+        query_params = self.request.query_params
+
+
 
 
 class CartItemViewSet (viewsets.ModelViewSet):
@@ -286,3 +221,17 @@ class CartItemViewSet (viewsets.ModelViewSet):
 
 # def add_to_cart (self,request):
 #     product= Product.objects.get(pk=int(request.GET['product_id']))
+
+
+class LatestOfferViewSet (viewsets.ModelViewSet):
+    serializer= serializers.LatestOfferSerializer
+    queryset=models.LatestOffer.objects.all()
+    authentication_classes = (TokenAuthentication, )
+    permission_classes = [permissions.IsAdminUser]
+
+
+class FamilyViewSet (viewsets.ModelViewSet):
+    serializer= serializers.FamilySerializer
+    queryset= models.Family.objects.all()
+    authentication_classes = (TokenAuthentication, )
+    permission_classes = [permissions.IsAdminUser]
