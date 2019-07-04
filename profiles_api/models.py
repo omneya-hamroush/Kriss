@@ -167,11 +167,16 @@ class Order (models.Model):
     client_number= models.CharField(max_length=255, null = True, blank=True)
     client_address= models.TextField(max_length=2000)
     client_email=models.CharField(max_length=255)
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    cart_item = models.ForeignKey(CartItem, on_delete=models.CASCADE, null =True)
     order_date= models.DateTimeField()
     is_deliverd = models.BooleanField(default=False)
     is_paid = models.BooleanField(default=False)
-    product_id = models.IntegerField(null=True, blank=True)
-    currency= models.CharField(max_length=255, choices=(('EGP','EGP'),('$', '$')), null=True)
-    total_amount= models.DecimalField(max_digits=8, decimal_places=2, null=True)
-    #payment_date= models.DateTimeField(default=dteNow)
+    status = models.CharField(max_length=24, default='New Order', choices=(('New Order', 'New Order'),
+    ('Out for Delivery', 'Out for Delivery'),('Delivered', 'Delivered'),('Canceled', 'Canceled'),))
+    quantity = models.IntegerField(default=1)
+
+    def products(self):
+       return CartItem.objects.filter(order=self)
+
+    def total(self):
+        return self.cart_item.product.price * self.quantity

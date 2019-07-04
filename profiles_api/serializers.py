@@ -116,6 +116,7 @@ class BrandSerializer (serializers.ModelSerializer):
 class CategorySerializer (serializers.ModelSerializer):
     class Meta:
         fields=(
+        'id',
         'category_name',
 
         )
@@ -160,3 +161,11 @@ class LatestOfferSerializer (serializers.ModelSerializer):
         'offer_width',
         )
         model=models.LatestOffer
+
+
+class OrderSerializer (serializers.ModelSerializer):
+    class Meta:
+        fields=(
+        '__all__'
+        )
+        model=models.Order

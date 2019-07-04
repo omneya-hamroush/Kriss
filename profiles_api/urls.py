@@ -15,6 +15,7 @@ router.register('offer-viewset', views.LatestOfferViewSet, base_name='offer-view
 router.register('family-viewset', views.FamilyViewSet, base_name='family-viewset')
 router.register('category-viewset', views.CategoryViewSet, base_name='category-viewset')
 router.register('brand-viewset', views.BrandViewSet, base_name='brand-viewset')
+router.register('order-viewset', views.OrderViewSet, base_name='order-viewset')
 
 urlpatterns=[
 #path('product-view/', views.ProductViewSet.as_view()),

@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import viewsets
-from profiles_api import serializers
+from profiles_api import serializers, permissions, authentication
 from profiles_api import models
 from rest_framework.authentication import TokenAuthentication
 #from profiles_api import permissions
@@ -25,7 +25,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 
 class FamilyViewSet (viewsets.ModelViewSet):
-    serializer= serializers.FamilySerializer
+    serializer_class= serializers.FamilySerializer
     queryset= models.Family.objects.all()
     authentication_classes = (TokenAuthentication, )
     permission_classes = [permissions.IsAdminUser]
@@ -38,8 +38,8 @@ class ProductViewSet (viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     # filterset_fields = ('name',)
     search_fields = ('name',)
-    authentication_classes = (TokenAuthentication, )
-    permission_classes = [permissions.IsAdminUser]
+    # authentication_classes = (TokenAuthentication, )
+    # permission_classes = [permissions.IsAdminUser]
 
     #sort by
     def get_queryset(self):
@@ -52,6 +52,18 @@ class ProductViewSet (viewsets.ModelViewSet):
         if best_seller is not None:
             queryset = queryset.filter(best_seller=True)
         return queryset
+
+    def display (self):
+        queryset = models.Product.objects.all()
+        query_params = self.request.query_params
+        product= self.request.query_params.get('product',None)
+        category = self.category.id
+        brand= self.family.brands.id
+        if product is not None:
+            queryset= queryset.filter(category= product__category__id)
+            return queryset
+
+
 
 
 class PictureViewSet (viewsets.ModelViewSet):
@@ -196,8 +208,8 @@ class CategoryViewSet (viewsets.ModelViewSet):
     filter_backends = (filters.SearchFilter,)
     search_fields = ('category_name',)
 
-    def list (self,request):
-        query_params = self.request.query_params
+    # def list (self,request):
+    #     query_params = self.request.query_params
 
 
 
@@ -228,7 +240,14 @@ class CartItemViewSet (viewsets.ModelViewSet):
 
 
 class LatestOfferViewSet (viewsets.ModelViewSet):
-    serializer= serializers.LatestOfferSerializer
+    serializer_class= serializers.LatestOfferSerializer
     queryset=models.LatestOffer.objects.all()
     authentication_classes = (TokenAuthentication, )
     permission_classes = [permissions.IsAdminUser]
+
+
+class OrderViewSet (viewsets.ModelViewSet):
+    serializer_class= serializers.OrderSerializer
+    queryset= models.Order.objects.all()
+    # authentication_classes = (TokenAuthentication, )
+    # permission_classes = [permissions.NoPermission]
