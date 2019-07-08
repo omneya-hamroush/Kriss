@@ -27,17 +27,17 @@ from django_filters.rest_framework import DjangoFilterBackend
 class FamilyViewSet (viewsets.ModelViewSet):
     serializer_class= serializers.FamilySerializer
     queryset= models.Family.objects.all()
-    # authentication_classes = (TokenAuthentication, )
-    # permission_classes = [permissions.IsAdminUser]
+    authentication_classes = (TokenAuthentication, )
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    def get_queryset(self):
-        queryset = models.Family.objects.all()
-        query_params = self.request.query_params
-        brand= self.request.query_params.get('brand', None)
-
-        if brand is not None:
-            queryset=queryset.filter(brands__brand_name=brand)
-            return queryset
+    # def get_queryset(self):
+    #     queryset = models.Family.objects.all()
+    #     query_params = self.request.query_params
+    #     brand= self.request.query_params.get('brand', None)
+    #
+    #     if brand is not None:
+    #         queryset=queryset.filter(brands__brand_name=brand)
+    #         return queryset
 
 
 
@@ -47,8 +47,8 @@ class ProductViewSet (viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     # filterset_fields = ('name',)
     search_fields = ('name',)
-    # authentication_classes = (TokenAuthentication, )
-    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    authentication_classes = (TokenAuthentication, )
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     #IsAdminUser
     #filteration
     def get_queryset(self):
@@ -68,7 +68,7 @@ class ProductViewSet (viewsets.ModelViewSet):
         query_params = self.request.query_params
         product= self.request.query_params.get('product', None)
 
-        for i in ['category', 'family__brands',]:
+        for i in ['category', 'family__brand',]:
             filter = self.request.query_params.get(i, None)
             if filter is not None:
                 queryset=queryset.filter(
@@ -85,8 +85,8 @@ class ProductViewSet (viewsets.ModelViewSet):
 class PictureViewSet (viewsets.ModelViewSet):
     serializer_class = serializers.PictureSerializer
     queryset=models.Picture.objects.all()
-    # authentication_classes = (TokenAuthentication, )
-    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    authentication_classes = (TokenAuthentication, )
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 
@@ -109,15 +109,15 @@ class StoreViewSet (viewsets.ModelViewSet):
     queryset=models.Store.objects.all()
     filter_backends = (filters.SearchFilter,)
     search_fields = ('store_area', 'store_city',)
-    # authentication_classes = (TokenAuthentication, )
-    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    authentication_classes = (TokenAuthentication, )
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class ContactUsViewSet (viewsets.ModelViewSet):
     serializer_class=serializers.ContactUsSerializer
     queryset=models.ContactUs.objects.all()
-    # authentication_classes = (TokenAuthentication, )
-    # permission_classes = [permissions.IsAdminUser]
+    authentication_classes = (TokenAuthentication, )
+    permission_classes = [permissions.IsAdminUser]
     # def send_comment (self, request, pk=None):
     #     contact_us=self.get_object()
 
@@ -212,19 +212,19 @@ class BrandViewSet (viewsets.ModelViewSet):
 class CategoryViewSet (viewsets.ModelViewSet):
     serializer_class=serializers.CategorySerializer
     queryset=models.Category.objects.all()
-    # authentication_classes = (TokenAuthentication, )
-    # permission_classes = [permissions.IsAdminUser]
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ('category_name',)
+    authentication_classes = (TokenAuthentication, )
+    permission_classes = [permissions.IsAdminUser]
+    # filter_backends = (filters.SearchFilter,)
+    # search_fields = ('category_name',)
 
-    def get_queryset(self):
-        queryset = models.Category.objects.all()
-        query_params = self.request.query_params
-        category= self.request.query_params.get('category', None)
-
-        if category is not None:
-            queryset=queryset.filter(category_name=category)
-            return queryset
+    # def get_queryset(self):
+    #     queryset = models.Category.objects.all()
+    #     query_params = self.request.query_params
+    #     category= self.request.query_params.get('category', None)
+    #
+    #     if category is not None:
+    #         queryset=queryset.filter(category_name=category)
+    #         return queryset
 
 
 

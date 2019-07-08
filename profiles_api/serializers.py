@@ -151,7 +151,7 @@ class FamilySerializer (serializers.ModelSerializer):
         fields=(
         'id',
         'family_name',
-        'brands',
+        'brand',
         'is_featured',
         )
         model=models.Family

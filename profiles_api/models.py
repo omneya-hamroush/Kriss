@@ -111,10 +111,15 @@ class CartManager(models.Manager):
 class Cart (models.Model):
 
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
-    number_of_products=models.IntegerField(default=1)
+    number_of_products=models.IntegerField(default=0, editable=False)
     #products = models.ArrayField(model_form_class= Product)
     products = models.ManyToManyField(Product)
     objects= CartManager()
+
+    def count_products(self):
+        count = self.products.count()
+        self.number_of_products = count
+        self.save()
 
 
 class CartItem (models.Model):

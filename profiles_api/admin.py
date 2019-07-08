@@ -4,11 +4,11 @@ from profiles_api import models
 
 
 
-class ContactUsAdmin(admin.ModelAdmin):
-    model = models.ContactUs
-    def has_add_permission(self, request):
-        return False if self.model.objects.count() > 0 else super().has_add_permission(request)
-
+# class ContactUsAdmin(admin.ModelAdmin):
+#     model = models.ContactUs
+#     def has_add_permission(self, request):
+#         return False if self.model.objects.count() > 0 else super().has_add_permission(request)
+#
 
 class AboutUsAdmin(admin.ModelAdmin):
     model = models.AboutUs
@@ -20,7 +20,7 @@ class AboutUsAdmin(admin.ModelAdmin):
 
 
 admin.site.register(models.Product)
-admin.site.register(models.AboutUs)
+admin.site.register(models.AboutUs, AboutUsAdmin)
 admin.site.register(models.Cart)
 admin.site.register(models.Picture)
 admin.site.register(models.ContactUs)
