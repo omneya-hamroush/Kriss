@@ -169,11 +169,12 @@ class Order (models.Model):
     client_email=models.CharField(max_length=255)
     cart_item = models.ForeignKey(CartItem, on_delete=models.CASCADE, null =True)
     order_date= models.DateTimeField()
-    is_deliverd = models.BooleanField(default=False)
-    is_paid = models.BooleanField(default=False)
+    # is_deliverd = models.BooleanField(default=False)
+    # is_paid = models.BooleanField(default=False)
     status = models.CharField(max_length=24, default='New Order', choices=(('New Order', 'New Order'),
     ('Out for Delivery', 'Out for Delivery'),('Delivered', 'Delivered'),('Canceled', 'Canceled'),))
     quantity = models.IntegerField(default=1)
+    cart_item_price =  models.IntegerField(default=0)
 
     def products(self):
        return CartItem.objects.filter(order=self)

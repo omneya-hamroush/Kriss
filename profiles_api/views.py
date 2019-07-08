@@ -27,8 +27,17 @@ from django_filters.rest_framework import DjangoFilterBackend
 class FamilyViewSet (viewsets.ModelViewSet):
     serializer_class= serializers.FamilySerializer
     queryset= models.Family.objects.all()
-    authentication_classes = (TokenAuthentication, )
-    permission_classes = [permissions.IsAdminUser]
+    # authentication_classes = (TokenAuthentication, )
+    # permission_classes = [permissions.IsAdminUser]
+
+    def get_queryset(self):
+        queryset = models.Family.objects.all()
+        query_params = self.request.query_params
+        brand= self.request.query_params.get('brand', None)
+
+        if brand is not None:
+            queryset=queryset.filter(brands__brand_name=brand)
+            return queryset
 
 
 
@@ -41,7 +50,7 @@ class ProductViewSet (viewsets.ModelViewSet):
     # authentication_classes = (TokenAuthentication, )
     # permission_classes = [permissions.IsAdminUser]
 
-    #sort by
+    #filteration
     def get_queryset(self):
         queryset = models.Product.objects.all()
         query_params = self.request.query_params
@@ -53,16 +62,23 @@ class ProductViewSet (viewsets.ModelViewSet):
             queryset = queryset.filter(best_seller=True)
         return queryset
 
-    def display (self):
+
+    def get_queryset(self):
         queryset = models.Product.objects.all()
         query_params = self.request.query_params
-        product= self.request.query_params.get('product',None)
-        category = self.category.id
-        brand= self.family.brands.id
-        if product is not None:
-            queryset= queryset.filter(category= product__category__id)
-            return queryset
+        product= self.request.query_params.get('product', None)
 
+        for i in ['category', 'family__brands',]:
+            filter = self.request.query_params.get(i, None)
+            if filter is not None:
+                queryset=queryset.filter(
+                    **{i:filter}
+                )
+        if product is not None:
+            queryset=queryset.filter(name__icontains=product)
+            # queryset=queryset.filter(category=category)
+            # queryset=queryset.filter(family__brands=brand)
+        return queryset
 
 
 
@@ -77,17 +93,14 @@ class PictureViewSet (viewsets.ModelViewSet):
 class CartViewSet (viewsets.ModelViewSet):
     serializer_class=serializers.CartSerializer
     queryset=models.Cart.objects.all()
-
-    # def list(self, request):
-    #     queryset = Cart.objects.all()
-    #     serializer = CartSerializer(queryset, many=True)
-    #     return Response(serializer.data)
-    #
-    def retrieve(self, request, pk=None):
-        queryset = Cart.objects.all()
-        cart = get_object_or_404(queryset, pk=pk)
-        serializer = CartSerializer(cart)
-        return Response(serializer.data)
+    #append
+    def put (self,request):
+        queryset=models.Cart.objects.all()
+        query_params = self.request.query_params
+        for i in['cart__id',]:
+            add_to_cart= self.request.query_params.get(i, None)
+            if add_to_cart is not None:
+                queryset=queryset.append()
 
 
 
@@ -196,21 +209,22 @@ class BrandViewSet (viewsets.ModelViewSet):
 	#             'data': serializer.data},
     #         	status = status.HTTP_200_OK)
 
-
-
-
-
 class CategoryViewSet (viewsets.ModelViewSet):
     serializer_class=serializers.CategorySerializer
     queryset=models.Category.objects.all()
-    authentication_classes = (TokenAuthentication, )
-    permission_classes = [permissions.IsAdminUser]
+    # authentication_classes = (TokenAuthentication, )
+    # permission_classes = [permissions.IsAdminUser]
     filter_backends = (filters.SearchFilter,)
     search_fields = ('category_name',)
 
-    # def list (self,request):
-    #     query_params = self.request.query_params
+    def get_queryset(self):
+        queryset = models.Category.objects.all()
+        query_params = self.request.query_params
+        category= self.request.query_params.get('category', None)
 
+        if category is not None:
+            queryset=queryset.filter(category_name=category)
+            return queryset
 
 
 
@@ -235,8 +249,6 @@ class CartItemViewSet (viewsets.ModelViewSet):
             )
 
 
-# def add_to_cart (self,request):
-#     product= Product.objects.get(pk=int(request.GET['product_id']))
 
 
 class LatestOfferViewSet (viewsets.ModelViewSet):

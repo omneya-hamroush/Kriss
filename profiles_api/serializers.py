@@ -114,7 +114,7 @@ class BrandSerializer (serializers.ModelSerializer):
 
 
 class CategorySerializer (serializers.ModelSerializer):
-    class Meta:
+    class Meta: 
         fields=(
         'id',
         'category_name',
@@ -148,6 +148,7 @@ class CartItemSerializer (serializers.ModelSerializer):
 class FamilySerializer (serializers.ModelSerializer):
     class Meta:
         fields=(
+        'id',
         'brands',
         'is_featured',
         )
