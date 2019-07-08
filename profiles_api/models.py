@@ -25,7 +25,8 @@ class Category (models.Model):
 
 
 class Family (models.Model):
-    brands= models.ForeignKey(Brand, on_delete=models.CASCADE)
+    family_name= models.CharField(max_length=255, null =True)
+    brand= models.ForeignKey(Brand, on_delete=models.CASCADE)
     is_featured= models.BooleanField(default=False)
     class Meta:
         verbose_name_plural = "families"
@@ -60,6 +61,7 @@ class Product (models.Model):
      short_line_1=models.CharField(max_length=255, null=True)
      short_line_2= models.CharField(max_length=255, null=True)
      short_line_3= models.CharField(max_length=255, null=True)
+     #cart= models.ForeignKey(Cart, on_delete=models.CASCADE)
      REQUIRED_FIELDS= ['name']
      objects= ProductManager()
     #  model_pic= models.ImageField(upload_to=upload_image, default='blog/images/already.png')
@@ -96,22 +98,20 @@ class AboutUs (models.Model):
 
 class CartManager(models.Manager):
     def create_cart(self, total_price, number_of_products):
-        if not name:
-            raise ValueError('Product must have a name')
 
 
-        product = self.model(name=name, description=description, price=price, product_image=product_image)
+        cart = self.model(total_price=total_price, number_of_products=number_of_products)
 
 
-        product.save(using=self._db)
+        cart.save(using=self._db)
 
-        return product
+        return cart
 
 
 class Cart (models.Model):
 
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
-    number_of_products = models.IntegerField(default=1)
+    number_of_products=models.IntegerField(default=1)
     #products = models.ArrayField(model_form_class= Product)
     products = models.ManyToManyField(Product)
     objects= CartManager()
@@ -121,7 +121,7 @@ class CartItem (models.Model):
 
     cart= models.ForeignKey(Cart, on_delete= models.CASCADE)
     product= models.ForeignKey(Product, on_delete= models.CASCADE)
-
+    quantity= models.IntegerField(default=1)
 
 
 

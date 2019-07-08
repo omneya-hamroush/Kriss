@@ -48,8 +48,8 @@ class ProductViewSet (viewsets.ModelViewSet):
     # filterset_fields = ('name',)
     search_fields = ('name',)
     # authentication_classes = (TokenAuthentication, )
-    # permission_classes = [permissions.IsAdminUser]
-
+    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    #IsAdminUser
     #filteration
     def get_queryset(self):
         queryset = models.Product.objects.all()
@@ -85,8 +85,8 @@ class ProductViewSet (viewsets.ModelViewSet):
 class PictureViewSet (viewsets.ModelViewSet):
     serializer_class = serializers.PictureSerializer
     queryset=models.Picture.objects.all()
-    authentication_classes = (TokenAuthentication, )
-    permission_classes = [permissions.IsAdminUser]
+    # authentication_classes = (TokenAuthentication, )
+    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 
@@ -109,8 +109,8 @@ class StoreViewSet (viewsets.ModelViewSet):
     queryset=models.Store.objects.all()
     filter_backends = (filters.SearchFilter,)
     search_fields = ('store_area', 'store_city',)
-    authentication_classes = (TokenAuthentication, )
-    permission_classes = [permissions.IsAdminUser]
+    # authentication_classes = (TokenAuthentication, )
+    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class ContactUsViewSet (viewsets.ModelViewSet):
@@ -185,7 +185,7 @@ class AboutUsViewSet (viewsets.ModelViewSet):
     serializer_class=serializers.AboutUsSerializer
     queryset=models.AboutUs.objects.all()
     authentication_classes = (TokenAuthentication, )
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 
@@ -193,7 +193,7 @@ class BrandViewSet (viewsets.ModelViewSet):
     serializer_class=serializers.BrandSerializer
     queryset=models.Brand.objects.all()
     authentication_classes = (TokenAuthentication, )
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     #filter_backends = (filters.SearchFilter,)
     #search_fields = ('brand_name',)
     # def list (self, request):
@@ -255,7 +255,7 @@ class LatestOfferViewSet (viewsets.ModelViewSet):
     serializer_class= serializers.LatestOfferSerializer
     queryset=models.LatestOffer.objects.all()
     authentication_classes = (TokenAuthentication, )
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class OrderViewSet (viewsets.ModelViewSet):
