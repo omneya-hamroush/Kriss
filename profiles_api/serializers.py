@@ -11,7 +11,7 @@ class ProductSerializer (serializers.ModelSerializer):
             'description',
             'price',
             'in_stock',
-            'product_image',
+
             'family',
             'latest',
             'best_seller',
@@ -23,21 +23,14 @@ class ProductSerializer (serializers.ModelSerializer):
             'short_line_3',
 
         )
-
         model = models.Product
 
-    # def get_product(self, obj):
-    #     product = obj.product
-    #     if not product:
-    #        return None
-    #     return {
-    #        "id": product.id,
-    #        "name": product.name,
-    #        "description":product.description,
-    #        "price":product.price,
-    #        "product_image":product.product_image
-    #         }
 
+
+class ProductPicSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=models.Product
+        fields=('product_image')
 
 class ContactUsSerializer(serializers.ModelSerializer):
     class Meta:

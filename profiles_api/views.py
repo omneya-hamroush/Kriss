@@ -68,6 +68,23 @@ class ProductViewSet (viewsets.ModelViewSet):
             # queryset=queryset.filter(category=category)
             # queryset=queryset.filter(family__brands=brand)
         return queryset
+
+
+    @action(
+        detail=True,
+        methods=['PUT'],
+        serializer_class=serializers.ProductPicSerializer,
+        
+    )
+    def pic(self, request, pk):
+        obj = self.get_object()
+        serializer = self.serializer_class(obj, data=request.data,
+                                           partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return response.Response(serializer.data)
+        return response.Response(serializer.errors,
+                                 status.HTTP_400_BAD_REQUEST)
     # def get_queryset(self):
     #     queryset = models.Product.objects.all()
     #     query_params = self.request.query_params
