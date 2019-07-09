@@ -111,7 +111,7 @@ class CartManager(models.Manager):
 class Cart (models.Model):
 
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
-    number_of_products=models.IntegerField(default=0, editable=False)
+    number_of_products=models.IntegerField(default=0)
     #products = models.ArrayField(model_form_class= Product)
     products = models.ManyToManyField(Product)
     objects= CartManager()
@@ -135,7 +135,6 @@ class ContactUs (models.Model):
     client_email = models.CharField(max_length=255)
     subject = models.CharField(max_length=255)
     how_can_i_help = models.TextField(max_length=3000)
-    working_hours = models.TextField(max_length=3000)
 
     def __unicode__(self):
 	    return 'Contact us'
@@ -147,7 +146,7 @@ class ContactUs (models.Model):
 
 class LatestOffer (models.Model):
     offer_link= models.TextField(max_length=3000, null= True)
-    offer_width= models.DecimalField(max_digits=9, decimal_places=8, choices=((0.33333333,'one third of the place under latest offer'),
+    offer_width= models.FloatField( choices=((0.33333333,'one third of the place under latest offer'),
     (0.5, 'half the place under latest offers'),(0.66666667,'2 thirds the place under latest offers'),
     (1,'the whole place under latest offers')), null=True)
     # offer_width= models.DecimalFractionField(max_digits=9,decimal_places=8,limit_denominator=None,

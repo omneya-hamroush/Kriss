@@ -51,17 +51,6 @@ class ProductViewSet (viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     #IsAdminUser
     #filteration
-    def get_queryset(self):
-        queryset = models.Product.objects.all()
-        query_params = self.request.query_params
-        latest = self.request.query_params.get('latest', None)
-        best_seller= self.request.query_params.get('best_seller',None)
-        if latest is not None:
-            queryset = queryset.filter(latest=True)
-        if best_seller is not None:
-            queryset = queryset.filter(best_seller=True)
-        return queryset
-
 
     def get_queryset(self):
         queryset = models.Product.objects.all()
@@ -79,6 +68,17 @@ class ProductViewSet (viewsets.ModelViewSet):
             # queryset=queryset.filter(category=category)
             # queryset=queryset.filter(family__brands=brand)
         return queryset
+    # def get_queryset(self):
+    #     queryset = models.Product.objects.all()
+    #     query_params = self.request.query_params
+    #     latest = self.request.query_params.get('latest', None)
+    #     best_seller= self.request.query_params.get('best_seller',None)
+    #     if latest is not None:
+    #         queryset = queryset.filter(latest=True)
+    #     if best_seller is not None:
+    #         queryset = queryset.filter(best_seller=True)
+    #     return queryset
+
 
 
 
@@ -116,10 +116,11 @@ class StoreViewSet (viewsets.ModelViewSet):
 class ContactUsViewSet (viewsets.ModelViewSet):
     serializer_class=serializers.ContactUsSerializer
     queryset=models.ContactUs.objects.all()
-    authentication_classes = (TokenAuthentication, )
-    permission_classes = [permissions.IsAdminUser]
+    # authentication_classes = (TokenAuthentication, )
+    # permission_classes = [permissions.IsAdminUser]
     # def send_comment (self, request, pk=None):
     #     contact_us=self.get_object()
+
 
 
     # @action(detail=True, methods=['post'])
@@ -149,36 +150,33 @@ class ContactUsViewSet (viewsets.ModelViewSet):
     #
     #     return Response ({'data':text.data})
 
-    # def create (self, request):
-    #     subject = 'New subject'
-    #     # data=request.data
-    #     form_subject= models.ContactUs.objects.create(
-    #     client_name=request.data.get('client_name'),
-    #     client_email=request.data.get('client_email'),
-    #     subject=request.data.get('subject'),
-    #     how_can_i_help= request.data.get('how_can_i_help')
-    #
-    #     )
-    #     form_subject.save()
-    #     message = "client_name: %s<br>client_email: %s<br>subject: %s<br>how_can_i_help: %s" % (
-    #         form_subject.client_name,
-    #         form_subject.client_email,
-    #         form_subject.subject,
-    #         form_subject.how_can_i_help
-    #     )
-    #     subject = '%s: %s #%d: %s' % (
-    #         subject,
-    #         form_subject.client_name,
-    #         form_subject.client_email,
-    #         form_subject.id
-    #     )
-    #     send_email(
-    #         message=message,
-    #         subject=subject,
-    #         recipients=['omnia.hamroush@student.guc.edu.eg']
-    #     )
-    #     return Response("Thanks, your comment has been sent")
-    #
+    def create (self, request):
+        subject = 'New subject'
+        # data=request.data
+        form_subject= models.ContactUs.objects.create(
+        client_name=request.data.get('client_name'),
+        client_email=request.data.get('client_email'),
+        subject=request.data.get('subject'),
+        how_can_i_help= request.data.get('how_can_i_help')
+
+        )
+        form_subject.save()
+        message = (
+        form_subject.client_name,
+        form_subject.client_email,
+        form_subject.subject,
+        form_subject.how_can_i_help
+        )
+        subject =  (
+        subject,
+        form_subject.client_name,
+        form_subject.client_email,
+        form_subject.id
+        )
+
+        return Response("Thanks, your comment has been sent")
+
+
 
 
 class AboutUsViewSet (viewsets.ModelViewSet):
@@ -213,7 +211,7 @@ class CategoryViewSet (viewsets.ModelViewSet):
     serializer_class=serializers.CategorySerializer
     queryset=models.Category.objects.all()
     authentication_classes = (TokenAuthentication, )
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     # filter_backends = (filters.SearchFilter,)
     # search_fields = ('category_name',)
 

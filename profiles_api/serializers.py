@@ -42,11 +42,12 @@ class ProductSerializer (serializers.ModelSerializer):
 class ContactUsSerializer(serializers.ModelSerializer):
     class Meta:
         fields = (
+        'id',
         'client_name',
         'client_email',
         'subject',
         'how_can_i_help',
-        'working_hours',
+
         )
         model= models.ContactUs
 
