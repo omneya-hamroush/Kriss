@@ -2,6 +2,8 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import viewsets
+from rest_framework import pagination
+from profiles_api.pagination import NotPaginatedSetPagination
 from profiles_api import serializers, permissions, authentication
 from profiles_api import models
 from rest_framework.authentication import TokenAuthentication
@@ -35,16 +37,7 @@ class FamilyViewSet (mixins.RetrieveModelMixin,mixins.ListModelMixin,
     queryset= models.Family.objects.all()
     authentication_classes = (TokenAuthentication, )
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-    # def get_queryset(self):
-    #     queryset = models.Family.objects.all()
-    #     query_params = self.request.query_params
-    #     brand= self.request.query_params.get('brand', None)
-    #
-    #     if brand is not None:
-    #         queryset=queryset.filter(brands__brand_name=brand)
-    #         return queryset
-
+    pagination_class= NotPaginatedSetPagination
 
 
 class ProductViewSet (mixins.RetrieveModelMixin,mixins.ListModelMixin,
@@ -56,6 +49,7 @@ class ProductViewSet (mixins.RetrieveModelMixin,mixins.ListModelMixin,
     search_fields = ('name',)
     authentication_classes = (TokenAuthentication, )
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # pagination_class = ItemsSetPagination
     #IsAdminUser
     #filteration
 
@@ -76,71 +70,7 @@ class ProductViewSet (mixins.RetrieveModelMixin,mixins.ListModelMixin,
             # queryset=queryset.filter(family__brands=brand)
         return queryset
 
-    def product_list(request):
-        queryset_list=models.Product.objects.all()
-        paginator=Paginator(queryset_list,24)
 
-        page=request.QUERY_PARAMS.get('page')
-        try:
-            products=paginator.page(page)
-        except PageNotAnInteger:
-
-            products=paginator.page(1)
-        except EmptyPage:
-
-            products=paginator.page(paginator.num_pages)
-
-        serializer_context = {'request': request}
-        serializer = PaginatedProductSerializer(products,context=serializer_context)
-        return Response(serializer.data)
-
-
-    # @api_view('GET')
-    # def user_list(request):
-    #     queryset = models.Product.objects.all()
-    #     paginator = Paginator(queryset, 24)
-    #
-    #     page = request.QUERY_PARAMS.get('page')
-    #     try:
-    #         products = paginator.page(page)
-    #     except PageNotAnInteger:
-    #
-    #         products = paginator.page(1)
-    #     except EmptyPage:
-    #
-    #         products = paginator.page(paginator.num_pages)
-    #
-    #     serializer_context = {'request': request}
-    #     serializer = PaginatedProductSerializer(products,
-    #                                          context=serializer_context)
-    #     return Response(serializer.data)
-
-
-
-# class PaginatedListView(viewsets.ListAPIView):
-#     queryset = models.Product.objects.all()
-#     serializer_class = serializers.ProductSerializer
-#     paginate_by = 24
-#     paginate_by_param = 'page_size'
-#     max_paginate_by = 100
-
-
-
-    # @action(
-    #     detail=True,
-    #     methods=['PUT'],
-    #     serializer_class=serializers.ProductPicSerializer,
-    #
-    # )
-    # def pic(self, request, pk):
-    #     obj = self.get_object()
-    #     serializer = self.serializer_class(obj, data=request.data,
-    #                                        partial=True)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return response.Response(serializer.data)
-    #     return response.Response(serializer.errors,
-    #                              status.HTTP_400_BAD_REQUEST)
     # def get_queryset(self):
     #     queryset = models.Product.objects.all()
     #     query_params = self.request.query_params
@@ -155,18 +85,91 @@ class ProductViewSet (mixins.RetrieveModelMixin,mixins.ListModelMixin,
 
 
 
+    # @action(detail=True,methods=['GET'],
+    #      serializer_class=serializers.ProductSerializer,)
+    # def product_list(request):
+    #     print('111111')
+    #     queryset_list=models.Product.objects.all()
+    #     paginator=Paginator(queryset_list,24)
+    #
+    #     page=request.QUERY_PARAMS.get('page')
+    #     try:
+    #         queryset=paginator.page(page)
+    #     except PageNotAnInteger:
+    #
+    #         queryset=paginator.page(1)
+    #     except EmptyPage:
+    #
+    #         queryset=paginator.page(paginator.num_pages)
+    #
+    #     serializer_context = {'request': request}
+    #     serializer = PaginatedProductSerializer(queryset,context=serializer_context)
+    #     return Response(serializer.data)
+
+
+#     @api_view('GET')
+#     def user_list(request):
+#         queryset = models.Product.objects.all()
+#         paginator = Paginator(queryset, 24)
+#
+#         page = request.QUERY_PARAMS.get('page')
+#         try:
+#             products = paginator.page(page)
+#         except PageNotAnInteger:
+#
+#             products = paginator.page(1)
+#         except EmptyPage:
+#
+#             products = paginator.page(paginator.num_pages)
+#
+#         serializer_context = {'request': request}
+#         serializer = PaginatedProductSerializer(products,
+#                                              context=serializer_context)
+#         return Response(serializer.data)
+#
+#
+# class CustomPagination(pagination.PageNumberPagination):
+#     def get_paginated_response(self, data):
+#         return Response({
+#             'links': {
+#                 'next': self.get_next_link(),
+#                 'previous': self.get_previous_link()
+#             },
+#             'count': self.page.paginator.count,
+#             'results': data
+#         })
+#
+#
+# class PaginatedListView(generics.ListAPIView):
+#     model = models.Product
+#     pagination_serializer_class = serializers.CustomPaginationSerializer
+#     paginate_by = 24
+# class PaginatedListView(viewsets.ListAPIView):
+#     queryset = models.Product.objects.all()
+#     serializer_class = serializers.ProductSerializer
+#     paginate_by = 24
+#     paginate_by_param = 'page_size'
+#     max_paginate_by = 100
+
+
+
+# class ItemsSetPagination(pagination.PageNumberPagination):
+#     page_size = 24
+
+
 class PictureViewSet (mixins.RetrieveModelMixin,mixins.ListModelMixin,
                    viewsets.GenericViewSet):
     serializer_class = serializers.PictureSerializer
     queryset=models.Picture.objects.all()
     authentication_classes = (TokenAuthentication, )
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
+    pagination_class= NotPaginatedSetPagination
 
 
 class CartViewSet (viewsets.ModelViewSet):
     serializer_class=serializers.CartSerializer
     queryset=models.Cart.objects.all()
+    pagination_class= NotPaginatedSetPagination
     #append
     def put (self,request):
         queryset=models.Cart.objects.all()
@@ -186,11 +189,13 @@ class StoreViewSet (mixins.RetrieveModelMixin,mixins.ListModelMixin,
     search_fields = ('store_area', 'store_city',)
     authentication_classes = (TokenAuthentication, )
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    pagination_class= NotPaginatedSetPagination
 
 
 class ContactUsViewSet (viewsets.ModelViewSet):
     serializer_class=serializers.ContactUsSerializer
     queryset=models.ContactUs.objects.all()
+    pagination_class= NotPaginatedSetPagination
     # authentication_classes = (TokenAuthentication, )
     # permission_classes = [permissions.IsAdminUser]
     # def send_comment (self, request, pk=None):
@@ -260,6 +265,7 @@ class AboutUsViewSet (mixins.RetrieveModelMixin,mixins.ListModelMixin,
     queryset=models.AboutUs.objects.all()
     authentication_classes = (TokenAuthentication, )
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    pagination_class= NotPaginatedSetPagination
 
 
 
@@ -269,6 +275,7 @@ class BrandViewSet (mixins.RetrieveModelMixin,mixins.ListModelMixin,
     queryset=models.Brand.objects.all()
     authentication_classes = (TokenAuthentication, )
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    pagination_class= NotPaginatedSetPagination
     #filter_backends = (filters.SearchFilter,)
     #search_fields = ('brand_name',)
     # def list (self, request):
@@ -290,23 +297,15 @@ class CategoryViewSet (mixins.RetrieveModelMixin,mixins.ListModelMixin,
     queryset=models.Category.objects.all()
     authentication_classes = (TokenAuthentication, )
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    # filter_backends = (filters.SearchFilter,)
-    # search_fields = ('category_name',)
-
-    # def get_queryset(self):
-    #     queryset = models.Category.objects.all()
-    #     query_params = self.request.query_params
-    #     category= self.request.query_params.get('category', None)
-    #
-    #     if category is not None:
-    #         queryset=queryset.filter(category_name=category)
-    #         return queryset
+    pagination_class= NotPaginatedSetPagination
 
 
 
 class CartItemViewSet (viewsets.ModelViewSet):
     serializer_class=serializers.CartItemSerializer
     queryset=models.CartItem.objects.all()
+    pagination_class= NotPaginatedSetPagination
+
 
     def create(self, request):
         serializer= serializers.CartItemSerializer(data=request.data)
@@ -333,10 +332,14 @@ class LatestOfferViewSet (mixins.RetrieveModelMixin,mixins.ListModelMixin,
     queryset=models.LatestOffer.objects.all()
     authentication_classes = (TokenAuthentication, )
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    pagination_class= NotPaginatedSetPagination
+
 
 
 class OrderViewSet (viewsets.ModelViewSet):
     serializer_class= serializers.OrderSerializer
     queryset= models.Order.objects.all()
+    pagination_class= NotPaginatedSetPagination
+    
     # authentication_classes = (TokenAuthentication, )
     # permission_classes = [permissions.NoPermission]
