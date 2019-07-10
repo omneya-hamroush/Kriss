@@ -5,6 +5,8 @@ from rest_framework import viewsets
 from profiles_api import serializers, permissions, authentication
 from profiles_api import models
 from rest_framework.authentication import TokenAuthentication
+from rest_framework import viewsets, mixins
+from django.core.paginator import Paginator
 #from profiles_api import permissions
 # from services.email_helper import send_email
 from rest_framework import filters
@@ -17,14 +19,18 @@ from rest_framework.decorators import action
 from rest_framework.authentication import TokenAuthentication
 #from django.db.models import Q
 from rest_framework.authtoken.views import ObtainAuthToken
-
+from rest_framework.pagination import (
+LimitOffsetPagination,
+PageNumberPagination,
+)
 from rest_framework import permissions
 from django.test.client import Client
 
 from django_filters.rest_framework import DjangoFilterBackend
 
 
-class FamilyViewSet (viewsets.ModelViewSet):
+class FamilyViewSet (mixins.RetrieveModelMixin,mixins.ListModelMixin,
+                   viewsets.GenericViewSet):
     serializer_class= serializers.FamilySerializer
     queryset= models.Family.objects.all()
     authentication_classes = (TokenAuthentication, )
@@ -41,7 +47,8 @@ class FamilyViewSet (viewsets.ModelViewSet):
 
 
 
-class ProductViewSet (viewsets.ModelViewSet):
+class ProductViewSet (mixins.RetrieveModelMixin,mixins.ListModelMixin,
+                   viewsets.GenericViewSet):
     serializer_class=serializers.ProductSerializer
     queryset=models.Product.objects.all()
     filter_backends = (DjangoFilterBackend,)
@@ -69,22 +76,71 @@ class ProductViewSet (viewsets.ModelViewSet):
             # queryset=queryset.filter(family__brands=brand)
         return queryset
 
+    def product_list(request):
+        queryset_list=models.Product.objects.all()
+        paginator=Paginator(queryset_list,24)
 
-    @action(
-        detail=True,
-        methods=['PUT'],
-        serializer_class=serializers.ProductPicSerializer,
-        
-    )
-    def pic(self, request, pk):
-        obj = self.get_object()
-        serializer = self.serializer_class(obj, data=request.data,
-                                           partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return response.Response(serializer.data)
-        return response.Response(serializer.errors,
-                                 status.HTTP_400_BAD_REQUEST)
+        page=request.QUERY_PARAMS.get('page')
+        try:
+            products=paginator.page(page)
+        except PageNotAnInteger:
+
+            products=paginator.page(1)
+        except EmptyPage:
+
+            products=paginator.page(paginator.num_pages)
+
+        serializer_context = {'request': request}
+        serializer = PaginatedProductSerializer(products,context=serializer_context)
+        return Response(serializer.data)
+
+
+    # @api_view('GET')
+    # def user_list(request):
+    #     queryset = models.Product.objects.all()
+    #     paginator = Paginator(queryset, 24)
+    #
+    #     page = request.QUERY_PARAMS.get('page')
+    #     try:
+    #         products = paginator.page(page)
+    #     except PageNotAnInteger:
+    #
+    #         products = paginator.page(1)
+    #     except EmptyPage:
+    #
+    #         products = paginator.page(paginator.num_pages)
+    #
+    #     serializer_context = {'request': request}
+    #     serializer = PaginatedProductSerializer(products,
+    #                                          context=serializer_context)
+    #     return Response(serializer.data)
+
+
+
+# class PaginatedListView(viewsets.ListAPIView):
+#     queryset = models.Product.objects.all()
+#     serializer_class = serializers.ProductSerializer
+#     paginate_by = 24
+#     paginate_by_param = 'page_size'
+#     max_paginate_by = 100
+
+
+
+    # @action(
+    #     detail=True,
+    #     methods=['PUT'],
+    #     serializer_class=serializers.ProductPicSerializer,
+    #
+    # )
+    # def pic(self, request, pk):
+    #     obj = self.get_object()
+    #     serializer = self.serializer_class(obj, data=request.data,
+    #                                        partial=True)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return response.Response(serializer.data)
+    #     return response.Response(serializer.errors,
+    #                              status.HTTP_400_BAD_REQUEST)
     # def get_queryset(self):
     #     queryset = models.Product.objects.all()
     #     query_params = self.request.query_params
@@ -99,7 +155,8 @@ class ProductViewSet (viewsets.ModelViewSet):
 
 
 
-class PictureViewSet (viewsets.ModelViewSet):
+class PictureViewSet (mixins.RetrieveModelMixin,mixins.ListModelMixin,
+                   viewsets.GenericViewSet):
     serializer_class = serializers.PictureSerializer
     queryset=models.Picture.objects.all()
     authentication_classes = (TokenAuthentication, )
@@ -121,7 +178,8 @@ class CartViewSet (viewsets.ModelViewSet):
 
 
 
-class StoreViewSet (viewsets.ModelViewSet):
+class StoreViewSet (mixins.RetrieveModelMixin,mixins.ListModelMixin,
+                   viewsets.GenericViewSet):
     serializer_class=serializers.StoreSerializer
     queryset=models.Store.objects.all()
     filter_backends = (filters.SearchFilter,)
@@ -196,7 +254,8 @@ class ContactUsViewSet (viewsets.ModelViewSet):
 
 
 
-class AboutUsViewSet (viewsets.ModelViewSet):
+class AboutUsViewSet (mixins.RetrieveModelMixin,mixins.ListModelMixin,
+                   viewsets.GenericViewSet):
     serializer_class=serializers.AboutUsSerializer
     queryset=models.AboutUs.objects.all()
     authentication_classes = (TokenAuthentication, )
@@ -204,7 +263,8 @@ class AboutUsViewSet (viewsets.ModelViewSet):
 
 
 
-class BrandViewSet (viewsets.ModelViewSet):
+class BrandViewSet (mixins.RetrieveModelMixin,mixins.ListModelMixin,
+                   viewsets.GenericViewSet):
     serializer_class=serializers.BrandSerializer
     queryset=models.Brand.objects.all()
     authentication_classes = (TokenAuthentication, )
@@ -224,7 +284,8 @@ class BrandViewSet (viewsets.ModelViewSet):
 	#             'data': serializer.data},
     #         	status = status.HTTP_200_OK)
 
-class CategoryViewSet (viewsets.ModelViewSet):
+class CategoryViewSet (mixins.RetrieveModelMixin,mixins.ListModelMixin,
+                   viewsets.GenericViewSet):
     serializer_class=serializers.CategorySerializer
     queryset=models.Category.objects.all()
     authentication_classes = (TokenAuthentication, )
@@ -266,7 +327,8 @@ class CartItemViewSet (viewsets.ModelViewSet):
 
 
 
-class LatestOfferViewSet (viewsets.ModelViewSet):
+class LatestOfferViewSet (mixins.RetrieveModelMixin,mixins.ListModelMixin,
+                   viewsets.GenericViewSet):
     serializer_class= serializers.LatestOfferSerializer
     queryset=models.LatestOffer.objects.all()
     authentication_classes = (TokenAuthentication, )

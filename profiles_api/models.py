@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.models import AbstractBaseUser,BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
+from rest_framework import generics
 
 
 class Brand (models.Model):
@@ -149,6 +150,7 @@ class LatestOffer (models.Model):
     offer_width= models.FloatField( choices=((0.33333333,'one third of the place under latest offer'),
     (0.5, 'half the place under latest offers'),(0.66666667,'2 thirds the place under latest offers'),
     (1,'the whole place under latest offers')), null=True)
+    products= models.ManyToManyField(Product, on_delete=models.CASCADE)
     # offer_width= models.DecimalFractionField(max_digits=9,decimal_places=8,limit_denominator=None,
     # coerce_thirds=True,choices=((1/3,'a third down latest offers'),
     # (1/2,'half the place down latest offer'),(2/3, '2 thirds of the place down latest offers')
@@ -163,7 +165,6 @@ class Store (models.Model):
     location_latitude = models.CharField(max_length=255, null=True)
     class Meta:
         verbose_name_plural = "stores"
-
 
 
 

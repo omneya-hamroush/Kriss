@@ -1,9 +1,11 @@
 from rest_framework import serializers
 from profiles_api import models
+from django.core.paginator import Paginator
 
 
 class ProductSerializer (serializers.ModelSerializer):
     #product = serializers.SerializerMethodField()
+    #image_url = serializers.SerializerMethodField('get_image_url')
     class Meta:
         fields = (
             'id',
@@ -11,7 +13,7 @@ class ProductSerializer (serializers.ModelSerializer):
             'description',
             'price',
             'in_stock',
-
+            'product_image',
             'family',
             'latest',
             'best_seller',
@@ -26,11 +28,12 @@ class ProductSerializer (serializers.ModelSerializer):
         model = models.Product
 
 
+# class PaginatedProductSerializer(pagination.PaginationSerializer):
+#
+#     class Meta:
+#         object_serializer_class = ProductSerializer
 
-class ProductPicSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=models.Product
-        fields=('product_image')
+
 
 class ContactUsSerializer(serializers.ModelSerializer):
     class Meta:
