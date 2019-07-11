@@ -27,7 +27,7 @@ SECRET_KEY = 'oodp#3twv914d%5c1_8h*!#d*4(ib^+1u^_&46c5v=0f1qo@*k'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['http://kriss.bit68.com']
+ALLOWED_HOSTS = []
 
 
 # Application definition
