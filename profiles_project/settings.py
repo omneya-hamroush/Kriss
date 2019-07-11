@@ -29,7 +29,7 @@ DEBUG = True
 
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['kriss.bit68.com','bit68.com','*']
 
 
 # Application definition
