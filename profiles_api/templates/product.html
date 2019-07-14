@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} Products {% endblock %}</title>
+</head>
+<body>
+  {% block pagecontent %}
+  <a href="{% url 'product-viewset' %}">Products</a>
+  {% endblock %}
+</body>
+</html>

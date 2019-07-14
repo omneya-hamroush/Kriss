@@ -11,6 +11,8 @@ from rest_framework import viewsets, mixins
 from django.core.paginator import Paginator
 #from profiles_api import permissions
 # from services.email_helper import send_email
+from django.shortcuts import render
+from django.views.generic import TemplateView
 from rest_framework import filters
 from rest_framework import status
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -49,6 +51,7 @@ class ProductViewSet (mixins.RetrieveModelMixin,mixins.ListModelMixin,
     search_fields = ('name',)
     authentication_classes = (TokenAuthentication, )
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    template_name="product.html"
     # pagination_class = ItemsSetPagination
     #IsAdminUser
     #filteration
@@ -340,6 +343,6 @@ class OrderViewSet (viewsets.ModelViewSet):
     serializer_class= serializers.OrderSerializer
     queryset= models.Order.objects.all()
     pagination_class= NotPaginatedSetPagination
-    
+
     # authentication_classes = (TokenAuthentication, )
     # permission_classes = [permissions.NoPermission]

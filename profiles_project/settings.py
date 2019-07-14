@@ -138,3 +138,14 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 #AUTH_USER_MODEL ='profiles_api.AdminUser'
+
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# STATICFILES_DIRS =[
+# os.path.join(BASE_DIR, "static"),
+# # '/var/www/static/',
+# ]
