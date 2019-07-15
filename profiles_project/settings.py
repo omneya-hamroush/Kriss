@@ -145,6 +145,9 @@ STATICFILES_DIRS = (
 )
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 # STATICFILES_DIRS =[
 # os.path.join(BASE_DIR, "static"),
 # # '/var/www/static/',
