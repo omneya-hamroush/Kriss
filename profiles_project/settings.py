@@ -31,6 +31,10 @@ DEBUG = True
 ALLOWED_HOSTS = ['kriss.bit68.com','bit68.com','*']
 
 
+<<<<<<< HEAD
+=======
+ALLOWED_HOSTS = ['kriss.bit68.com','bit68.com','*']
+>>>>>>> cbaa36b75dfb4201313cb3465590d418cc32ef64
 
 
 # Application definition
@@ -90,8 +94,16 @@ WSGI_APPLICATION = 'profiles_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+
+        'ENGINE': 'django.db.backends.mysql',
+        # 'ENGINE': 'mysql.connector.django',
+        'NAME': 'Kriss',
+        'USER': 'root',
+        'PASSWORD': 'BIT68_123qwe4r',
+        # 'HOST': 'kriss.bit68.com',
+        # 'PORT': 8000,
     }
 }
 
@@ -140,3 +152,17 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 #AUTH_USER_MODEL ='profiles_api.AdminUser'
+
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+# STATICFILES_DIRS =[
+# os.path.join(BASE_DIR, "static"),
+# # '/var/www/static/',
+# ]
