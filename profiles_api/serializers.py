@@ -141,6 +141,7 @@ class CartSerializer (serializers.ModelSerializer):
 
 
 class CartItemSerializer (serializers.ModelSerializer):
+    cart = serializers.CharField(required=False)
     class Meta:
         fields=(
         'id',

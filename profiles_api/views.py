@@ -29,6 +29,7 @@ PageNumberPagination,
 )
 from rest_framework import permissions
 from django.test.client import Client
+from django.shortcuts import get_object_or_404
 
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -102,6 +103,7 @@ class CartViewSet (viewsets.ModelViewSet):
     serializer_class=serializers.CartSerializer
     queryset=models.Cart.objects.all()
     pagination_class= NotPaginatedSetPagination
+
     #append
     # def update (self,request):
     #     queryset=models.Cart.objects.all()
@@ -112,6 +114,23 @@ class CartViewSet (viewsets.ModelViewSet):
     #         if add_to_cart is not None:
     #             products=products.append(add_to_cart)
     #         return products
+    # def add_to_cart(request,product_id):
+    #
+    #         try:
+    #             product = Product.objects.get(pk=product_id)
+    #         except ObjectDoesNotExist:
+    #             pass
+    #         else :
+    #             try:
+    #                 cart = Cart.objects.get(user = request.user, active = True)
+    #             except ObjectDoesNotExist:
+    #                 cart = Cart.objects.create(user = request.user)
+    #                 cart.save()
+    #                 cart.add_to_cart(product_id)
+    #                 return redirect('cart')
+    #             else:
+    #                 return redirect('index')
+
 
 
 class StoreViewSet (mixins.RetrieveModelMixin,mixins.ListModelMixin,
@@ -241,21 +260,40 @@ class CartItemViewSet (viewsets.ModelViewSet):
 
 
     def create(self, request):
+        cart=request.data.get('cart')
+        product=request.data.get('product')
+        cart_product=get_object_or_404(models.Product, id=product)
         serializer= serializers.CartItemSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            # cart= models.Cart.objects.get(pk=int(request.GET['cart_id']))
-            # product= models.Product.objects.get(pk=int(request.GET['product_id']))
-            # cart=serializer.validated_data.get('cart')
-            # product=serializer.validated_data.get('product')
-            #message= f'new cart item {cart, product}!'
-            return Response ({'data':serializer.data})
+        if cart is not None:
+            new_cart=models.Cart.objects.get(id=cart)
         else:
-            return Response(
-            serializer.errors,
-            status=status.HTTP_400_BAD_REQUEST
-            )
-        return Response ("your cart item has been created")
+            new_cart=models.Cart.objects.create()
+
+        cart_item=models.CartItem.objects.create(
+            cart=new_cart,
+            product=cart_product,
+            quantity=request.data.get('quantity'),
+
+        )
+        cart_item.save()
+        return Response('cart item created')
+    # def create(self,request):
+    #     serializer= serializers.CartItemSerializer(data=request.data)
+    #     if serializer.is_valid():
+    #
+    #         serializer.save()
+    #         # cart= models.Cart.objects.get(pk=int(request.GET['cart_id']))
+    #         # product= models.Product.objects.get(pk=int(request.GET['product_id']))
+    #         # cart=serializer.validated_data.get('cart')
+    #         # product=serializer.validated_data.get('product')
+    #         #message= f'new cart item {cart, product}!'
+    #         return Response ({'data':serializer.data})
+    #     else:
+    #         return Response(
+    #         serializer.errors,
+    #         status=status.HTTP_400_BAD_REQUEST
+    #         )
+    #     return Response ("your cart item has been created")
 
 
 

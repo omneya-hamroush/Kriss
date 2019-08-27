@@ -111,10 +111,10 @@ class CartManager(models.Manager):
 
 class Cart (models.Model):
 
-    total_price = models.DecimalField(max_digits=10, decimal_places=2)
-    number_of_products=models.IntegerField(default=0)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    number_of_products=models.IntegerField(default=0, null=True)
     #products = models.ArrayField(model_form_class= Product)
-    products = models.ManyToManyField(Product)
+    products = models.ManyToManyField(Product, null=True)
     objects= CartManager()
 
     def count_products(self):
@@ -122,10 +122,29 @@ class Cart (models.Model):
         self.number_of_products = count
         self.save()
 
+    def add_to_cart(self, product_id):
+        product = Product.objects.get(pk=product_id)
+        try:
+            preexisting_order = CartItem.objects.get(product=product, cart=self)
+            preexisting_order.quantity += 1
+            preexisting_order.save()
+        except CartItem.DoesNotExist:
+            new_order = CartItem.objects.create(
+                product=product,
+                cart=self,
+                quantity=1
+                )
+            new_order.save()
+
+
+    def __unicode__(self):
+        return "%s" % (self.product_id)
+
+
 
 class CartItem (models.Model):
 
-    cart= models.ForeignKey(Cart, on_delete= models.CASCADE)
+    cart= models.ForeignKey(Cart, on_delete= models.CASCADE,null=True, blank=True)
     product= models.ForeignKey(Product, on_delete= models.CASCADE)
     quantity= models.IntegerField(default=1)
 
@@ -153,7 +172,7 @@ class LatestOffer (models.Model):
     offer_image= models.ImageField(blank=True, null=True, upload_to="pictures/%Y/%m/%D")
     image_text= models.TextField(max_length=2000, null=True)
 
-    
+
 class Store (models.Model):
     store_area = models.CharField(max_length=255)
     store_city = models.CharField(max_length=255, null=True)
