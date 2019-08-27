@@ -28,8 +28,13 @@ SECRET_KEY = 'oodp#3twv914d%5c1_8h*!#d*4(ib^+1u^_&46c5v=0f1qo@*k'
 DEBUG = True
 
 
-
 ALLOWED_HOSTS = ['kriss.bit68.com','bit68.com','*']
+
+
+<<<<<<< HEAD
+=======
+ALLOWED_HOSTS = ['kriss.bit68.com','bit68.com','*']
+>>>>>>> cbaa36b75dfb4201313cb3465590d418cc32ef64
 
 CORS_ORIGIN_WHITELIST = [
 'http://localhost:4200'
@@ -151,6 +156,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
 #AUTH_USER_MODEL ='profiles_api.AdminUser'
 
 
