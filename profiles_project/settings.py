@@ -31,10 +31,8 @@ DEBUG = True
 ALLOWED_HOSTS = ['kriss.bit68.com','bit68.com','*']
 
 
-<<<<<<< HEAD
-=======
+
 ALLOWED_HOSTS = ['kriss.bit68.com','bit68.com','*']
->>>>>>> cbaa36b75dfb4201313cb3465590d418cc32ef64
 
 CORS_ORIGIN_WHITELIST = [
 'http://localhost:4200'
