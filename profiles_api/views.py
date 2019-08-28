@@ -34,6 +34,22 @@ from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 
 
+
+def add_to_cart(self, product_id):
+    product = Product.objects.get(pk=product_id)
+    try:
+        preexisting_order = CartItem.objects.get(product=product, cart=self)
+        preexisting_order.quantity += 1
+        preexisting_order.save()
+    except CartItem.DoesNotExist:
+        new_order = CartItem.objects.create(
+            product=product,
+            cart=self,
+            quantity=1
+            )
+        new_order.save()
+
+
 class FamilyViewSet (mixins.RetrieveModelMixin,mixins.ListModelMixin,
                    viewsets.GenericViewSet):
     serializer_class= serializers.FamilySerializer
@@ -104,6 +120,21 @@ class CartViewSet (viewsets.ModelViewSet):
     queryset=models.Cart.objects.all()
     pagination_class= NotPaginatedSetPagination
 
+    def count_products(self):
+        count = self.products.count()
+        self.number_of_products = count
+        self.save()
+        
+    def create(self,request):
+        cart=models.Cart.objects.create(
+            total_price=
+            number_of_products=self.products.count,
+        )
+        products= models.CartItem.objects.all()
+        all_products= products.filter(cart=self.id)
+        for i in all_products:
+            product=i.product
+            self.products.add(product)
     #append
     # def update (self,request):
     #     queryset=models.Cart.objects.all()

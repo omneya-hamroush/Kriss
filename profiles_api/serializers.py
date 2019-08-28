@@ -130,6 +130,7 @@ class CategorySerializer (serializers.ModelSerializer):
 
 
 class CartSerializer (serializers.ModelSerializer):
+    products=serializers.CharField(required=False)
     class Meta:
         fields=(
         'id',
