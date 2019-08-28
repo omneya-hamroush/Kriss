@@ -117,24 +117,24 @@ class Cart (models.Model):
     products = models.ManyToManyField(Product, null=True)
     objects= CartManager()
 
-    def count_products(self):
-        count = self.products.count()
-        self.number_of_products = count
-        self.save()
-
-    def add_to_cart(self, product_id):
-        product = Product.objects.get(pk=product_id)
-        try:
-            preexisting_order = CartItem.objects.get(product=product, cart=self)
-            preexisting_order.quantity += 1
-            preexisting_order.save()
-        except CartItem.DoesNotExist:
-            new_order = CartItem.objects.create(
-                product=product,
-                cart=self,
-                quantity=1
-                )
-            new_order.save()
+    # def count_products(self):
+    #     count = self.products.count()
+    #     self.number_of_products = count
+    #     self.save()
+    #
+    # def add_to_cart(self, product_id):
+    #     product = Product.objects.get(pk=product_id)
+    #     try:
+    #         preexisting_order = CartItem.objects.get(product=product, cart=self)
+    #         preexisting_order.quantity += 1
+    #         preexisting_order.save()
+    #     except CartItem.DoesNotExist:
+    #         new_order = CartItem.objects.create(
+    #             product=product,
+    #             cart=self,
+    #             quantity=1
+    #             )
+    #         new_order.save()
 
 
     def __unicode__(self):
